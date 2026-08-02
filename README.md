@@ -92,8 +92,8 @@ To change the instructions the assistant receives, edit `buildPrompt()` in
 `src/theme/Root` gates the whole app behind Google sign-in and a `roles.isAdmin`
 check against the same Firestore record the dashboard reads.
 
-It needs three values — put them in `web/docs-site/.env` locally (gitignored,
-loaded by dotenv) and in Netlify's environment for production:
+It needs three values — put them in `.env` locally (gitignored, loaded by
+dotenv) and in Netlify's environment for production:
 
 ```bash
 VITE_FIREBASE_API_KEY=
@@ -117,9 +117,6 @@ Closing that gap needs a metered edge function, which was a deliberate no.
 
 So: no credentials, no customer data, no real UIDs in these pages.
 
-`npm start` with no env vars set runs ungated, so you can write docs locally
-without credentials. That bypass is development-only.
-
 ## Adding a page
 
 1. Create the Markdown file under the right `docs/` folder with `title`,
@@ -133,9 +130,12 @@ Full conventions: `docs/developers/editing-these-docs.md`.
 
 ## Deploying
 
-Push to `main`. Netlify builds from base directory `web/docs-site` and publishes
-`build/`. Settings live in `netlify.toml`, so nothing needs typing into the UI
-beyond the base directory.
+Push to `main`. This is its own repo (`jmcancode/mobros_docs`), so Netlify's
+Base directory is empty and `netlify.toml` supplies everything else.
+
+The three `VITE_*` values from `.env` must also be set in **Netlify → Site
+configuration → Environment variables** — they're read at build time, and a
+build without them fails on purpose rather than deploying a broken site.
 
 ## Moving the domain
 

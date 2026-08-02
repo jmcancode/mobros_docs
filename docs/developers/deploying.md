@@ -17,15 +17,18 @@ Three deploy targets, three different stories.
 
 ## The docs site on Netlify
 
-The repo is a monorepo with several deployable web projects, so each Netlify
-site points at its own subdirectory. `web/docs-site/netlify.toml` already
-carries the build settings — you shouldn't need to type them into the UI.
+The docs site lives in its own repo — `jmcancode/mobros_docs` — so Netlify's
+repo root is the project root and **Base directory stays empty**. `netlify.toml`
+carries the build settings, so there's nothing to type into the UI.
+
+(The dashboard and hub are different: they sit inside the `mobros` monorepo, so
+their Netlify sites *do* need a Base directory. Don't copy their setup here.)
 
 ### Creating the site
 
-1. **Add new site → Import an existing project**, and pick the MoBros repo.
-2. Set **Base directory** to `web/docs-site`.
-3. Netlify reads `netlify.toml` from that base directory and fills in the rest:
+1. **Add new site → Import an existing project**, and pick `mobros_docs`.
+2. Leave **Base directory** empty.
+3. Netlify reads `netlify.toml` and fills in the rest:
    - **Build command:** `npm run build`
    - **Publish directory:** `build`
    - **Node version:** 20
@@ -85,8 +88,6 @@ VITE_FIREBASE_API_KEY=
 VITE_AUTH_DOMAIN=
 VITE_PROJECT_ID=
 ```
-
-(`DOCS_FIREBASE_API_KEY` and friends work too and win if both are set.)
 
 These are read at build time and baked into the bundle, so **changing one needs
 a redeploy**, not just a restart. A production build with no config fails

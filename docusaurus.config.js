@@ -2,49 +2,56 @@
 // MoBros TCG — documentation site
 // Docs: https://docusaurus.io/docs
 
-import {themes as prismThemes} from 'prism-react-renderer';
-import 'dotenv/config';
+import { themes as prismThemes } from "prism-react-renderer";
+import "dotenv/config";
 
 /**
  * Firebase web config for the sign-in gate.
  *
- * Two naming schemes are accepted. `VITE_*` is what the rest of this repo uses
- * (the dashboard is a Vite app), so a `.env` copied from there works unchanged;
- * `DOCS_*` is available when you'd rather be explicit about which site a
- * variable belongs to. Locally these come from `web/docs-site/.env` via dotenv,
- * which is gitignored. In production they come from Netlify's environment.
+ * `VITE_*` naming matches the rest of the MoBros codebase (the dashboard is a
+ * Vite app), so a `.env` copied from there works unchanged. The prefix means
+ * nothing to Docusaurus — it's convention, not magic. Locally these load from
+ * this project's `.env` via dotenv, which is gitignored; in production they
+ * come from Netlify's environment.
  *
  * All three values are public by design — they identify the Firebase project
  * rather than authorising anything, and they ship in the bundle either way.
  * Firestore security rules are what actually protect data.
  */
 const firebaseConfig = {
-  apiKey: process.env.DOCS_FIREBASE_API_KEY || process.env.VITE_FIREBASE_API_KEY,
-  authDomain:
-    process.env.DOCS_FIREBASE_AUTH_DOMAIN ||
-    process.env.VITE_FIREBASE_AUTH_DOMAIN ||
-    process.env.VITE_AUTH_DOMAIN,
-  projectId:
-    process.env.DOCS_FIREBASE_PROJECT_ID ||
-    process.env.VITE_FIREBASE_PROJECT_ID ||
-    process.env.VITE_PROJECT_ID,
+  apiKey: process.env.VITE_FIREBASE_API_KEY,
+  authDomain: process.env.VITE_AUTH_DOMAIN,
+  projectId: process.env.VITE_PROJECT_ID,
 };
 
-// A production build with no config would render the gate's error state for
-// every visitor. Fail the build instead — it's a far cheaper place to find out.
-if (process.env.NODE_ENV === 'production' && !firebaseConfig.apiKey) {
+// A production build with no config would deploy a site that shows every
+// visitor the gate's error screen. Fail the build instead — much cheaper place
+// to find out. If you're reading this in a Netlify log, that's the guard
+// working, not a code problem.
+const missingFirebaseKeys = Object.entries(firebaseConfig)
+  .filter(([, value]) => !value)
+  .map(([key]) => key);
+
+if (process.env.NODE_ENV === "production" && missingFirebaseKeys.length) {
   throw new Error(
-    'Firebase config missing. Set VITE_FIREBASE_API_KEY, VITE_AUTH_DOMAIN and ' +
-      'VITE_PROJECT_ID (or the DOCS_FIREBASE_* equivalents) in the environment ' +
-      'or in web/docs-site/.env. See docs/developers/deploying.md.',
+    `Firebase config incomplete (missing: ${missingFirebaseKeys.join(", ")}) — ` +
+      "the docs sign-in gate has nothing to talk to.\n\n" +
+      "Set these three in Netlify → Site configuration → Environment variables,\n" +
+      "then redeploy (they are read at build time):\n\n" +
+      "  VITE_FIREBASE_API_KEY\n" +
+      "  VITE_AUTH_DOMAIN\n" +
+      "  VITE_PROJECT_ID\n\n" +
+      "The values are the same public Firebase web config the admin dashboard\n" +
+      "uses; locally they live in this project's .env file.\n" +
+      "See docs/developers/deploying.md.",
   );
 }
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'MoBros Admin Docs',
-  tagline: 'How to run the shop from the Command Center',
-  favicon: 'img/favicon.ico',
+  title: "MoBros Admin Docs",
+  tagline: "How to run the shop from the Command Center",
+  favicon: "img/favicon.ico",
 
   future: {
     v4: true,
@@ -52,21 +59,20 @@ const config = {
   },
 
   // Production URL. Netlify serves this at the apex domain.
-  url: 'https://mobrostc.info',
-  baseUrl: '/',
+  url: "https://mobrostc.info",
+  baseUrl: "/",
 
-  organizationName: 'mobros',
-  projectName: 'mobros-docs',
+  organizationName: "mobros",
+  projectName: "mobros-docs",
 
-  // Private site — everything sits behind the staff sign-in gate in
-  // netlify/edge-functions/gate.ts. `noIndex` adds a robots meta tag to every
-  // page; the gate and netlify.toml add the matching header. A crawler can't
-  // reach these pages anyway, but saying so costs nothing.
+  // Private site — everything sits behind the sign-in gate in src/theme/Root.
+  // `noIndex` adds a robots meta tag to every page; netlify.toml adds the
+  // matching header.
   noIndex: true,
 
   // A docs site that lies is worse than no docs site — fail the build on
   // broken links rather than shipping them.
-  onBrokenLinks: 'throw',
+  onBrokenLinks: "throw",
 
   markdown: {
     // Left as MDX (the default) on purpose. CommonMark mode looks tempting —
@@ -76,27 +82,27 @@ const config = {
     // renders as literal text. The callouts carry the warnings that matter
     // most, so MDX wins and the tokens are wrapped in backticks instead.
     hooks: {
-      onBrokenMarkdownLinks: 'warn',
+      onBrokenMarkdownLinks: "warn",
     },
   },
 
   i18n: {
-    defaultLocale: 'en',
-    locales: ['en'],
+    defaultLocale: "en",
+    locales: ["en"],
   },
 
   // Baked into the bundle at build time, so changing one needs a redeploy.
-  customFields: {firebase: firebaseConfig},
+  customFields: { firebase: firebaseConfig },
 
   presets: [
     [
-      'classic',
+      "classic",
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          sidebarPath: './sidebars.js',
+          sidebarPath: "./sidebars.js",
           // Docs are the whole site — no /docs prefix.
-          routeBasePath: '/',
+          routeBasePath: "/",
           // Set this once the docs site is pushed to GitHub and the
           // "Edit this page" links start working.
           editUrl: undefined,
@@ -107,7 +113,7 @@ const config = {
         },
         blog: false,
         theme: {
-          customCss: './src/css/custom.css',
+          customCss: "./src/css/custom.css",
         },
         // No sitemap: the site is private, so a machine-readable index of
         // every page would be all downside.
@@ -120,7 +126,7 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       colorMode: {
-        defaultMode: 'dark',
+        defaultMode: "dark",
         respectPrefersColorScheme: true,
       },
       docs: {
@@ -130,67 +136,70 @@ const config = {
         },
       },
       navbar: {
-        title: 'MoBros Admin Docs',
+        title: "MoBros Admin Docs",
         logo: {
-          alt: 'MoBros',
-          src: 'img/logo.svg',
+          alt: "MoBros",
+          src: "img/logo.svg",
         },
         items: [
           {
-            type: 'docSidebar',
-            sidebarId: 'staffSidebar',
-            position: 'left',
-            label: 'Staff guide',
+            type: "docSidebar",
+            sidebarId: "staffSidebar",
+            position: "left",
+            label: "Staff guide",
           },
           {
-            type: 'docSidebar',
-            sidebarId: 'developerSidebar',
-            position: 'left',
-            label: 'Developers',
+            type: "docSidebar",
+            sidebarId: "developerSidebar",
+            position: "left",
+            label: "Developers",
           },
           {
-            to: '/reference/glossary',
-            position: 'left',
-            label: 'Reference',
+            to: "/reference/glossary",
+            position: "left",
+            label: "Reference",
           },
           {
-            href: 'https://admin.mobrostc.info',
-            label: 'Open the dashboard',
-            position: 'right',
+            href: "https://admin.mobrostc.info",
+            label: "Open the dashboard",
+            position: "right",
           },
           {
-            type: 'custom-signOut',
-            position: 'right',
+            type: "custom-signOut",
+            position: "right",
           },
         ],
       },
       footer: {
-        style: 'dark',
+        style: "dark",
         links: [
           {
-            title: 'Staff guide',
+            title: "Staff guide",
             items: [
-              {label: 'Start here', to: '/'},
-              {label: 'Signing in', to: '/getting-started/signing-in'},
-              {label: 'Sell Requests', to: '/operations/sell-requests'},
-              {label: 'Product Pricing', to: '/catalog/product-pricing'},
+              { label: "Start here", to: "/" },
+              { label: "Signing in", to: "/getting-started/signing-in" },
+              { label: "Sell Requests", to: "/operations/sell-requests" },
+              { label: "Product Pricing", to: "/catalog/product-pricing" },
             ],
           },
           {
-            title: 'Developers',
+            title: "Developers",
             items: [
-              {label: 'Architecture', to: '/developers/architecture'},
-              {label: 'Local setup', to: '/developers/local-setup'},
-              {label: 'Firestore collections', to: '/developers/firestore-collections'},
-              {label: 'Deploying', to: '/developers/deploying'},
+              { label: "Architecture", to: "/developers/architecture" },
+              { label: "Local setup", to: "/developers/local-setup" },
+              {
+                label: "Firestore collections",
+                to: "/developers/firestore-collections",
+              },
+              { label: "Deploying", to: "/developers/deploying" },
             ],
           },
           {
-            title: 'Reference',
+            title: "Reference",
             items: [
-              {label: 'Glossary', to: '/reference/glossary'},
-              {label: 'Status reference', to: '/reference/statuses'},
-              {label: 'Who can see what', to: '/reference/role-matrix'},
+              { label: "Glossary", to: "/reference/glossary" },
+              { label: "Status reference", to: "/reference/statuses" },
+              { label: "Who can see what", to: "/reference/role-matrix" },
             ],
           },
         ],
@@ -199,7 +208,7 @@ const config = {
       prism: {
         theme: prismThemes.github,
         darkTheme: prismThemes.dracula,
-        additionalLanguages: ['bash', 'json', 'jsx'],
+        additionalLanguages: ["bash", "json", "jsx"],
       },
     }),
 };

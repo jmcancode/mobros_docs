@@ -104,10 +104,13 @@ VITE_PROJECT_ID=
 ```
 
 The `VITE_` prefix means nothing to Docusaurus — it's kept because the rest of
-this repo is Vite, so a `.env` copied from the dashboard works unchanged. The
-`DOCS_FIREBASE_API_KEY` / `DOCS_FIREBASE_AUTH_DOMAIN` / `DOCS_FIREBASE_PROJECT_ID`
-spellings are also accepted and take precedence, if you'd rather be explicit
-about which site a variable belongs to.
+the MoBros codebase is Vite, so a `.env` copied from the dashboard works
+unchanged. Note the second and third have no `FIREBASE` in them; that's the
+dashboard's spelling, and matching it beats being tidy.
+
+A build fails if **any** of the three is missing, and the error names which —
+an apiKey without an authDomain passes a naive check and then breaks at
+sign-in, which is a much worse place to find out.
 
 There are no secrets here. All three are public by design — they identify the
 Firebase project rather than authorising anything, and they ship in the bundle

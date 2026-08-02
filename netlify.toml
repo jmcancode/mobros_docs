@@ -1,8 +1,9 @@
 # Netlify config for the MoBros docs site.
 #
-# The repo is a monorepo, so the Netlify site's *Base directory* must be set to
-# `web/docs-site` in the UI. Netlify then reads this file from that directory
-# and every path below is relative to it.
+# This project is deployed from its own repo (jmcancode/mobros_docs), so the
+# Netlify site's *Base directory* is empty and every path below is relative to
+# the repo root. If it's ever moved back inside the mobros monorepo, set Base
+# directory to `web/docs-site` and these paths keep working unchanged.
 #
 # Access is handled in the browser by src/theme/Root — Google sign-in plus an
 # admin check against the same Firestore user record the dashboard reads. There

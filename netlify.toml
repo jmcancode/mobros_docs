@@ -1,0 +1,67 @@
+# Netlify config for the MoBros docs site.
+#
+# The repo is a monorepo, so the Netlify site's *Base directory* must be set to
+# `web/docs-site` in the UI. Netlify then reads this file from that directory
+# and every path below is relative to it.
+
+[build]
+  command = "npm run build"
+  publish = "build"
+
+[build.environment]
+  # Docusaurus 3 requires Node 20+. Pinning it means a Netlify default bump
+  # can't break the build without us choosing to.
+  NODE_VERSION = "20"
+  NPM_FLAGS = "--prefer-offline --no-audit --no-fund"
+
+# Deploy previews and branch builds: same build, but don't let a preview get
+# indexed if the domain is ever pointed at one.
+[context.deploy-preview]
+  command = "npm run build"
+
+[context.branch-deploy]
+  command = "npm run build"
+
+# ── Headers ────────────────────────────────────────────────────────────────
+# Docusaurus fingerprints everything under /assets, so those are safe to cache
+# forever. HTML must never be cached, or a content change won't reach anyone
+# until their browser feels like it.
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# ── Redirects ──────────────────────────────────────────────────────────────
+# Deliberately NO SPA catch-all. Docusaurus emits a real HTML file per route,
+# so a 404 should stay a 404 rather than silently rendering the homepage.
+#
+# Old paths from before `routeBasePath: '/'` was set:
+[[redirects]]
+  from = "/docs/*"
+  to = "/:splat"
+  status = 301
+  force = false

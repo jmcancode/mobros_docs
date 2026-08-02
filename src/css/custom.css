@@ -1,0 +1,73 @@
+/**
+ * MoBros docs theme.
+ *
+ * Colours are lifted from the admin dashboard (src/index.css) so staff moving
+ * between the two don't feel a seam: near-black surfaces, amber accent.
+ * Light mode uses a darkened amber (#a16207) so link text still clears
+ * WCAG AA on white — the dashboard's #eab308 does not.
+ */
+
+:root {
+  --ifm-color-primary: #a16207;
+  --ifm-color-primary-dark: #915807;
+  --ifm-color-primary-darker: #895306;
+  --ifm-color-primary-darkest: #714505;
+  --ifm-color-primary-light: #b16c07;
+  --ifm-color-primary-lighter: #ba7108;
+  --ifm-color-primary-lightest: #d27f09;
+
+  --ifm-code-font-size: 92%;
+  --ifm-font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter,
+    Roboto, 'Helvetica Neue', sans-serif;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #eab308;
+  --ifm-color-primary-dark: #d3a107;
+  --ifm-color-primary-darker: #c79807;
+  --ifm-color-primary-darkest: #a47d06;
+  --ifm-color-primary-light: #edbb25;
+  --ifm-color-primary-lighter: #eebf33;
+  --ifm-color-primary-lightest: #f1cb5c;
+
+  --ifm-background-color: #0a0a0a;
+  --ifm-background-surface-color: #141414;
+  --ifm-navbar-background-color: #141414;
+  --ifm-footer-background-color: #0a0a0a;
+  --ifm-toc-border-color: #2a2a2a;
+  --ifm-hr-background-color: #2a2a2a;
+  --ifm-table-stripe-background: rgba(255, 255, 255, 0.02);
+  --ifm-table-border-color: #2a2a2a;
+
+  --docusaurus-highlighted-code-line-bg: rgba(255, 255, 255, 0.08);
+}
+
+/* Tables carry a lot of the weight in this documentation — make them legible
+   rather than decorative. */
+.markdown table {
+  display: table;
+  width: 100%;
+  font-size: 0.92rem;
+}
+
+.markdown table th {
+  text-align: left;
+}
+
+/* UI labels are quoted constantly ("Mark all processed"). The chip lets a
+   reader tell a button name from prose without re-reading the sentence. */
+.markdown code {
+  border-radius: 5px;
+  padding: 0.12rem 0.34rem;
+}
+
+/* Slightly tighter sidebar so all six staff categories fit without scrolling. */
+.menu {
+  font-size: 0.9rem;
+}
+
+.footer--dark {
+  --ifm-footer-background-color: #0a0a0a;
+  border-top: 1px solid #2a2a2a;
+}

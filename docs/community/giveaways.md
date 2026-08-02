@@ -8,7 +8,7 @@ description: Publishing prize drops to the mobile app's giveaway feed.
 
 > Drops shown in the mobile app's giveaway feed
 
-:::danger This is a content editor, not a drawing engine
+:::danger[This is a content editor, not a drawing engine]
 The dashboard does **not** pick winners, does **not** count entries, and does
 **not** notify anyone. You run the draw yourself, then come here and type the
 winner's handle in. **Total Participants** is a number you type, not a live
@@ -51,7 +51,7 @@ The editor carries a fixed block headed **Apple Guideline 5.3**:
 And the disclaimer the app shows entrants:
 
 > No purchase necessary to enter or win. Must be a registered account holder to
-> participate. {Sponsor} is the sole sponsor of this giveaway. Apple Inc. is not
+> participate. `{Sponsor}` is the sole sponsor of this giveaway. Apple Inc. is not
 > a sponsor and is not involved in this promotion in any capacity.
 
 Weighted or tiered entries based on points or spending were deliberately
@@ -65,9 +65,9 @@ field.
 change, and the draw date does **not** flip anything automatically. If a
 giveaway is over, someone has to come here and mark it Ended.
 
-Deleting asks *Delete "{title}"? This cannot be undone.*
+Deleting asks *Delete "`{title}`"? This cannot be undone.*
 
-:::note A missing draw date sorts oddly
+:::note[A missing draw date sorts oddly]
 The list is ordered by the ends-at date. A record with a missing or malformed
 draw date can sort strangely or fall off the top of the list.
 :::

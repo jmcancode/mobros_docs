@@ -85,7 +85,7 @@ migration path is `verifyToken` + a per-route-group `roleGuard`:
 Admin passes every `roleGuard` automatically. Do this one group at a time,
 testing each with a non-admin account.
 
-:::note Login is currently stricter than the routes
+:::note[Login is currently stricter than the routes]
 `Login.jsx` requires `roles.isAdmin === true` before it lets anyone through,
 even though `ProtectedRoute` is written to admit any staff role. Until that's
 relaxed, non-admin staff can't reach the dashboard at all. Worth fixing before
@@ -125,15 +125,16 @@ keys fall back to a generic shape and a generic line.
 
 ## A third surface: the docs site
 
-The documentation site reuses the role system rather than inventing one. Its
-Netlify edge gate posts a Firebase ID token to `GET /api/docs-auth/me`, which is
-guarded by `verifyToken` + `verifyStaff` — so docs access is exactly "holds any
-staff role" and can't drift from dashboard access.
+The documentation site reuses this role system rather than inventing one. Its
+gate (`src/theme/Root` over there) signs the reader in with Google and then
+reads the same `users/{uid}` document to check `roles.isAdmin` — exactly what
+`Login.jsx` does here. Revoking someone's dashboard access revokes their docs
+access at the same time.
 
-Note the bar is deliberately lower than the dashboard's current login, which
-still demands `isAdmin`. Once that's relaxed, the two line up exactly.
-
-Details in [Deploying → The sign-in gate](./deploying.md#the-sign-in-gate).
+It's a client-side check on a static site, so it is a deterrent rather than a
+wall — see
+[Deploying → The sign-in gate](./deploying.md#the-sign-in-gate) for what that
+does and doesn't buy, and write the docs accordingly.
 
 ## Adding a new gated screen
 

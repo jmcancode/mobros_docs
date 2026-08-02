@@ -8,7 +8,7 @@ description: The Mo'Rewards program config — earning, tiers, redemption option
 
 The single config screen for the whole Mo'Rewards program.
 
-:::danger Saving is immediate and global
+:::danger[Saving is immediate and global]
 There is no draft, no staging, no schedule. The banner says it outright:
 **Config saved — live immediately for all customers.** Every change you make
 applies to every member the moment you press **Save config**.
@@ -80,7 +80,7 @@ shows its immutable ID and lets you set:
 - **Redemption rate multiplier** — how much more a point is worth at this tier
 - **Color**
 
-:::caution Nothing validates your tier ladder
+:::caution[Nothing validates your tier ladder]
 There's no check that thresholds are in order, no check against overlapping
 tiers, and no check against a zero multiplier. Read the ladder top to bottom
 before saving.
@@ -94,7 +94,7 @@ A table of what points buy. Each row: **Enabled**, **ID**, **Points**,
 > Base credit is the Rare-tier value; higher tiers multiply it by their
 > redemption rate (e.g. $5.00 base → $8.00 at a 1.6× tier).
 
-:::warning The most generous option sets the point value everywhere
+:::warning[The most generous option sets the point value everywhere]
 The "point value" figure used in liability maths across the whole dashboard is
 derived from your **most generous enabled** redemption option. Disabling one
 option can move liability numbers on Customers, Rewards, and elsewhere.

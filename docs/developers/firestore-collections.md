@@ -6,7 +6,7 @@ description: The data model — collections, subcollections, ordering fields and
 
 # Firestore collections
 
-:::tip Schema lives in the writers
+:::tip[Schema lives in the writers]
 There is no schema file. For any collection, open the code that writes to it and
 read the object passed to `setDoc` / `updateDoc` / `addDoc`. That's the field
 set, and it's the only thing that's authoritative.
@@ -105,7 +105,7 @@ prize operations.
 The authoritative physical unit records — SKU, QR code, cost basis, ask price,
 per-channel counts, show assignment.
 
-:::warning Admin-locked
+:::warning[Admin-locked]
 Security rules restrict this collection to admins. The staff who actually work
 these units (Front of House, Back of House) aren't admins, so **client-side
 reads return nothing**. Everything touching `inventoryUnits` goes through the

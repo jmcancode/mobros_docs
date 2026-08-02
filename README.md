@@ -18,8 +18,29 @@ Port 3100 because Docusaurus defaults to 3000 and the backend wants that.
 ```bash
 npm run build     # static build into build/ — fails on broken links
 npm run serve     # serve the build
-npm run clear     # clear the cache when the dev server serves something stale
+npm run clear     # clear the cache — see below
 ```
+
+### If the dev server shows errors that make no sense
+
+Docusaurus caches its module graph in `.docusaurus/`, and that cache does **not**
+notice two things: a newly installed dependency, and a newly added swizzle under
+`src/theme/`. Pull a branch that adds either and the running dev server will
+insist on nonsense — `Module not found: Can't resolve 'turndown'` for a package
+that's sitting right there in `node_modules`, or
+`No NavbarItem component found for type "custom-signOut"` for a component that
+exists.
+
+Stop the server and:
+
+```bash
+npm install       # if package.json changed
+npm run clear     # always, after pulling a swizzle or a new dep
+npm start
+```
+
+That fixes it. Reach for this before debugging the code — the error messages
+point confidently at the wrong thing.
 
 ## Layout
 
@@ -41,57 +62,63 @@ docusaurus.config.js       Site config, navbar, footer
 sidebars.js                Two sidebars — staff and developer
 netlify.toml               Build, headers, redirects
 src/css/custom.css         Theme, matched to the dashboard palette
-plugins/llm-export.js      Generates the LLM-friendly copies (below)
+src/theme/Root/            The sign-in gate (below)
+src/components/SignInScreen/   What you see until you're signed in
+src/lib/firebase.js        Lazy Firebase init, shared by the gate
 src/components/CopyForAI/  The "Copy for AI" button
 src/theme/DocItem/Content/ Wrapper that puts the button above each page title
-netlify/edge-functions/    gate.ts — the staff sign-in wall (below)
+src/theme/NavbarItem/      Registers the "Sign out" navbar item
 ```
+
+## The "Copy for AI" button
+
+Every page has one. It copies the page wrapped in a prompt preamble so staff can
+paste it into ChatGPT / Claude / Gemini and ask in plain English. The text ends
+with `MY QUESTION:` so their cursor lands in the right place — and the preamble
+tells the assistant what to do if they paste and hit send without typing, which
+is the most common way this goes wrong.
+
+The markdown is built from the rendered article in the browser, via Turndown.
+An earlier version pre-generated `/llm/<page>.md` files plus a `/llms-full.txt`
+containing the whole manual — but those sat on the CDN unauthenticated, which
+made the sign-in gate pointless. Reading the DOM keeps the feature and removes
+the corpus. Side benefit: what gets copied always matches what's on screen.
+
+To change the instructions the assistant receives, edit `buildPrompt()` in
+`src/components/CopyForAI/index.js`.
 
 ## This site is private
 
-`netlify/edge-functions/gate.ts` runs at the edge on every request. No session,
-no content — including `/llms-full.txt` and every `/llm/*.md` file. Sign-in is
-Google, checked against the same Firestore roles the dashboard uses via
-`GET /api/docs-auth/me` on the backend.
+`src/theme/Root` gates the whole app behind Google sign-in and a `roles.isAdmin`
+check against the same Firestore record the dashboard reads.
 
-It needs five environment variables set in Netlify and one Firebase authorised
-domain. **Setup: `docs/developers/deploying.md` → "The sign-in gate".**
-
-`npm start` runs ungated — edge functions only run under `netlify dev` or on
-Netlify. Handy locally, worth remembering before you assume the gate is broken.
-
-To sanity-check a deploy:
+It needs three values — put them in `web/docs-site/.env` locally (gitignored,
+loaded by dotenv) and in Netlify's environment for production:
 
 ```bash
-curl -si https://mobrostc.info/llms-full.txt | head -1   # expect 401
+VITE_FIREBASE_API_KEY=
+VITE_AUTH_DOMAIN=
+VITE_PROJECT_ID=
 ```
 
-## The "Copy for AI" feature
+Plus `mobrostc.info` added under Firebase Console → Authentication → Settings →
+Authorized domains, or Google sign-in fails with `auth/unauthorized-domain`.
+**Full setup: `docs/developers/deploying.md` → "The sign-in gate".**
 
-Every page has a **Copy for AI** button. It copies that page's markdown wrapped
-in a prompt preamble, so a staff member can paste it into ChatGPT / Claude /
-Gemini and ask a question without knowing anything about prompting. The copied
-text ends with `My question:` so their cursor lands in the right place.
+Leave the env unset and `npm start` skips the gate so you can write docs without
+credentials — the navbar shows **Gate off (dev)** so you can tell. A production
+build with no config fails rather than shipping broken.
 
-`plugins/llm-export.js` generates three things into `static/` on every build
-and every dev-server start:
+Be clear-eyed about what it is: a client-side gate on a static site. The page
+HTML on the CDN is a near-empty shell — the app renders client-side, so `curl`
+on a page URL returns the sign-in screen — but the content is compiled into the
+JS chunks under `/assets/js/`, which are fetchable by anyone who bothers.
+Closing that gap needs a metered edge function, which was a deliberate no.
 
-| Path | What it is |
-| --- | --- |
-| `/llm/<permalink>.md` | One prompt-wrapped file per page — what the button fetches |
-| `/llms.txt` | An index of every page, per the llms.txt convention |
-| `/llms-full.txt` | The entire manual in one file, for large-context models |
+So: no credentials, no customer data, no real UIDs in these pages.
 
-All of it is gitignored — it's build output, regenerated from `docs/`.
-
-**The one thing that can break it:** the plugin derives each page's URL the same
-way Docusaurus does for this site — `routeBasePath: '/'`, so a file's route is
-its path under `docs/` minus the extension, unless front matter sets a `slug`.
-Change `routeBasePath` and the button starts 404ing. If that happens, the fix is
-in `permalinkFor()` in the plugin.
-
-To edit the instructions the assistant receives, change `buildPrompt()` in the
-same file.
+`npm start` with no env vars set runs ungated, so you can write docs locally
+without credentials. That bypass is development-only.
 
 ## Adding a page
 

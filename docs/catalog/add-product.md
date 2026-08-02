@@ -96,7 +96,7 @@ moment.
 Errors coming back from Shopify are mapped onto the individual fields that
 caused them.
 
-:::warning This form targets the dev store
+:::warning[This form targets the dev store]
 The create request currently hardcodes the dev store. Products created here
 won't land on production until that's changed — flag it to a developer before
 using this screen for real inventory.

@@ -22,17 +22,6 @@ token-refresh retry.
 | `POST` | `/billing/override` | Owner-only. Start/end a trial, or mark a feature paid |
 | `POST` | `/billing/checkout` | Creates a Stripe checkout session for the selected features |
 
-## Docs site access
-
-| Method | Path | Purpose |
-| --- | --- | --- |
-| `GET` | `/docs-auth/me` | Returns `{ ok, uid, email, isAdmin, roles }` for a valid staff token. 401 if the token is bad, 403 if the account holds no staff role |
-
-Called server-to-server by the docs site's edge gate, never from a browser.
-Guarded by `verifyToken` + `verifyStaff`, plus an optional `x-docs-gate-secret`
-header when `DOCS_GATE_SECRET` is set. See
-[Deploying → The sign-in gate](./deploying.md#the-sign-in-gate).
-
 ## Sell requests
 
 | Method | Path | Purpose |
@@ -84,7 +73,7 @@ calls.
 }
 ```
 
-:::warning Backend contract
+:::warning[Backend contract]
 `route` and `product` must be forwarded into the FCM `data` payload for deep
 links to work. Dropping them silently breaks product-linked pushes with no
 visible error on either side.

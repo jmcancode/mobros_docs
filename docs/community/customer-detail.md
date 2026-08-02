@@ -28,7 +28,7 @@ customer attributes that grant nothing.
 Full descriptions of each are in
 [What you can see](../getting-started/what-you-can-see.md).
 
-:::warning Turning on a staff role grants dashboard access
+:::warning[Turning on a staff role grants dashboard access]
 Any of the ten staff toggles lets that person into the Command Center. Grant
 deliberately.
 
@@ -37,7 +37,7 @@ Two things that *don't* happen: flipping **Admin** here does not expose the
 explicit account allowlist, not by role.
 :::
 
-:::note Concurrent edits clobber each other
+:::note[Concurrent edits clobber each other]
 Saving writes the whole roles map at once. If two people edit the same customer
 simultaneously, the second save wins outright.
 :::

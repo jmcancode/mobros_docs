@@ -6,7 +6,7 @@ description: Moderating the customer feed of card pulls.
 
 # Hit Feed
 
-:::info Requires the Hit Feed feature
+:::info[Requires the Hit Feed feature]
 See [Locked features](../getting-started/locked-features.md).
 :::
 
@@ -56,7 +56,7 @@ disagreement, not a violation.
 
 A **Clean** post gets only **Remove** — there's nothing to clear.
 
-:::note Closing a re-reported post keeps it in the queue
+:::note[Closing a re-reported post keeps it in the queue]
 If a post picks up new reports after you closed it, closing again won't stick —
 it stays in Needs Review because the new reports haven't been reviewed.
 :::
@@ -65,7 +65,7 @@ it stays in Needs Review because the new reports haven't been reviewed.
 
 The modal spells out what happens:
 
-> Removing **{card}** by **{author}** hides it from the app and sends the author
+> Removing **`{card}`** by **`{author}`** hides it from the app and sends the author
 > a push notification. It moves to the Removed tab here, where it can be
 > restored.
 

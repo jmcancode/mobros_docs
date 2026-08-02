@@ -57,7 +57,7 @@ subscriber count.
 
 - **Notify** sends the restock push to everyone waiting on that product.
 - **Remove** deletes the request entirely, after a confirm reading
-  *Remove "{name}" from the restock list? This will delete the request and
+  *Remove "`{name}`" from the restock list? This will delete the request and
   cannot be undone.* There is no undo.
 
 ## Chargeback reports

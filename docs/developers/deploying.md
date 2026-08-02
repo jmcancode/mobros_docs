@@ -48,92 +48,82 @@ carries the build settings — you shouldn't need to type them into the UI.
 
 ### The sign-in gate
 
-The docs site is private. `netlify/edge-functions/gate.ts` runs at the edge on
-every request and refuses anything without a valid staff session.
+The docs site is staff-only. `src/theme/Root` wraps the whole app: it signs the
+reader in with Google, reads their `users/{uid}` document, and renders the docs
+only if `roles.isAdmin` is true. Same project, same account, same check as the
+dashboard's `Login.jsx` — so revoking dashboard access revokes docs access.
 
-**Why at the edge and not in the app.** This is a static site. A login screen
-inside React would protect the rendered pages and nothing else — `/llms-full.txt`
-and every `/llm/*.md` file would still be one `curl` away, and those contain the
-entire manual in plain text. Enforcing before Netlify serves the byte is the only
-version of this that's real.
+:::caution[Be clear-eyed about what this protects]
+This is a client-side gate on a static site. It stops a casual visitor and means
+the URL can be shared without handing over the manual. It is **not** a
+server-side wall.
 
-**How a sign-in goes:**
+Two things narrow the gap. The whole app renders client-side, so the HTML files
+on the CDN are near-empty shells — `curl` on any page URL returns the sign-in
+screen, not the content. And the site no longer publishes the plain-text copies
+of every page that used to back the Copy for AI button; that feature now builds
+its text from the rendered page instead.
 
-1. No session cookie → the edge function returns the sign-in page itself. It's
-   inline HTML with no dependency on site assets, because allowlisting
-   `/assets/*` would leak everything (Docusaurus bundles page text into JS
-   chunks).
-2. The page runs Google sign-in and POSTs the Firebase ID token to
-   `/_gate/session`.
-3. The gate forwards that token to `GET /api/docs-auth/me` on the backend, which
-   verifies it with the Admin SDK and checks the Firestore `roles` map — the same
-   source of truth the dashboard uses. Grant someone a staff role and their docs
-   access follows; there's no second list.
-4. On success the gate mints its own HMAC-signed cookie. Every later request is
-   verified locally at the edge, so there's no backend round-trip per asset.
+What remains: the page content is compiled into the JavaScript chunks under
+`/assets/js/`, which are publicly fetchable. Someone who knows what they're
+doing can pull the route manifest and read them. Closing that needs a check that
+runs before Netlify serves the file — a metered edge function, which was a
+deliberate no.
 
-The bar is **any staff role**, not Admin — see
-[`verifyStaff`](./access-control.md#backend-guards).
+**Write the docs on that basis.** No credentials, no customer data, no real
+UIDs. Business process and UI labels: fine.
+:::
 
 #### Setting it up
 
-**1. Deploy the backend.** `backend/routes/docs-auth.routes.js` is mounted in
-`index.js` at `/api/docs-auth`. Nothing works until this is live.
-
-**2. Generate a session secret.**
+**1. Set three build-time environment variables** in Netlify (Site
+configuration → Environment variables) — the same public Firebase web config
+the dashboard uses:
 
 ```bash
-openssl rand -base64 48
+VITE_FIREBASE_API_KEY=
+VITE_AUTH_DOMAIN=
+VITE_PROJECT_ID=
 ```
 
-**3. Set the Netlify environment variables** (Site configuration →
-Environment variables). Full list in
-[Environment variables](./environment-variables.md#docs-site-webdocs-site):
-`DOCS_SESSION_SECRET`, `DOCS_API_URL`, `DOCS_FIREBASE_API_KEY`,
-`DOCS_FIREBASE_AUTH_DOMAIN`, `DOCS_FIREBASE_PROJECT_ID`, and optionally
-`DOCS_GATE_SECRET`.
+(`DOCS_FIREBASE_API_KEY` and friends work too and win if both are set.)
 
-**4. Authorise the domain in Firebase.** Firebase Console → Authentication →
+These are read at build time and baked into the bundle, so **changing one needs
+a redeploy**, not just a restart. A production build with no config fails
+loudly rather than shipping a broken site.
+
+For local work, put the same three in `web/docs-site/.env` — it's gitignored and
+loaded automatically.
+
+**2. Authorise the domain in Firebase.** Firebase Console → Authentication →
 Settings → **Authorized domains** → add `mobrostc.info`.
 
-:::warning This is the step that gets missed
-Skip it and sign-in fails with `auth/unauthorized-domain` — the page says so
+:::warning[This is the step that gets missed]
+Skip it and sign-in fails with `auth/unauthorized-domain`. The screen says so
 explicitly, but only after someone has already tried and been confused. Do it
 before you tell anyone the site is live. Add the Netlify `*.netlify.app` domain
 too if you want deploy previews to be signable-in.
 :::
 
-**5. Deploy and test in a private window.** You should get the sign-in card, not
-the docs. Then check the parts people forget:
+**3. Check Firestore rules allow a signed-in user to read their own record.**
+The dashboard's login already relies on this, so it almost certainly works —
+but if the gate shows *Couldn't read your account permissions*, that's the
+cause.
 
-```bash
-curl -si https://mobrostc.info/llms-full.txt | head -1   # expect 401
-curl -si https://mobrostc.info/llm/intro.md   | head -1   # expect 401
-```
-
-If either returns 200, the gate isn't running — check that Netlify picked up the
-edge function (it looks in `<base>/netlify/edge-functions`, so
-`web/docs-site/netlify/edge-functions`).
+**4. Deploy and test in a private window.** You should get the sign-in card.
 
 #### Operating it
 
 | Task | How |
 | --- | --- |
-| Sign everyone out | Change `DOCS_SESSION_SECRET`. Takes effect immediately, no rebuild |
-| Revoke one person | Remove their staff roles — same as revoking dashboard access. Their current session lasts until it expires (≤12h) |
-| Sign out on this machine | The **Sign out** link, top right. Sessions also end when the browser closes |
-| Change session length | `SESSION_HOURS` in `gate.ts` |
+| Revoke someone | Remove `roles.isAdmin` — same as revoking dashboard access. Takes effect on their next page load |
+| Widen access to all staff | Add the other staff role keys to `ALLOWED_ROLES` in `src/theme/Root/index.js`. One line |
+| Sign out on this machine | The **Sign out** link, top right |
 
-**Deploy previews are gated too** — same build, same edge function. A preview URL
-is not a way around the wall.
-
-**Invocation cost:** the gate runs on `/*`, so it fires for every asset request,
-not just page views. That's necessary — the JS chunks contain the content — but
-it means edge function invocations scale with traffic. Fine for a shop team;
-worth knowing if the audience ever grows.
-
-**Local development runs ungated.** `npm start` doesn't run edge functions. Use
-`netlify dev` if you need to exercise the gate locally.
+**Local development runs ungated.** `npm start` with no Firebase env vars set
+skips the gate so you can write docs without credentials. That bypass is scoped
+to `NODE_ENV === 'development'`, so a production build can never take it — but
+it does mean "it let me straight in locally" is expected, not a bug.
 
 ### The custom domain
 
@@ -175,7 +165,7 @@ Two things it needs that the docs site doesn't:
 
   Without it, a hard refresh on `/sell-requests` 404s.
 
-:::warning Don't skip VITE_API_URL
+:::warning[Don't skip VITE_API_URL]
 A production build without it points every API call at localhost. The code logs
 a console error when it detects this, but the site will look completely broken
 to anyone who hits it.

@@ -6,7 +6,7 @@ description: The back-house queue for cards already bought at the counter.
 
 # Intake Processing
 
-:::info Requires the Card Scanner feature
+:::info[Requires the Card Scanner feature]
 This screen is hidden until the Card Scanner feature is activated. See
 [Locked features](../getting-started/locked-features.md).
 :::
@@ -35,7 +35,7 @@ A batch is one buy — the Tuesday morning stack from one customer, usually one
 physical box. Each row shows:
 
 - the card count
-- either **All processed** (green) or **{n} to process** (yellow)
+- either **All processed** (green) or **`{n}` to process** (yellow)
 - **Commit failed** in red if the buy didn't post cleanly
 - the bin or box chip, if one was assigned
 - date, age, and who took the buy
@@ -52,7 +52,7 @@ condition, its SKU (or **no SKU**), and its cost against market.
 | **Select all** | Ticks every card currently loaded for that batch |
 | **Queue for listing** | On by default. Adds processed cards to the listing worklist |
 | **Mark all processed** | With nothing ticked, processes **every loaded card** in the batch |
-| **Mark {n} processed** | With a selection, processes just those |
+| **Mark `{n}` processed** | With a selection, processes just those |
 | ✓ button on a row | Processes that one card |
 
 ### What "processed" actually does

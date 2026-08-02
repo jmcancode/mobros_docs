@@ -3,7 +3,42 @@
 // Docs: https://docusaurus.io/docs
 
 import {themes as prismThemes} from 'prism-react-renderer';
-import llmExport from './plugins/llm-export.js';
+import 'dotenv/config';
+
+/**
+ * Firebase web config for the sign-in gate.
+ *
+ * Two naming schemes are accepted. `VITE_*` is what the rest of this repo uses
+ * (the dashboard is a Vite app), so a `.env` copied from there works unchanged;
+ * `DOCS_*` is available when you'd rather be explicit about which site a
+ * variable belongs to. Locally these come from `web/docs-site/.env` via dotenv,
+ * which is gitignored. In production they come from Netlify's environment.
+ *
+ * All three values are public by design — they identify the Firebase project
+ * rather than authorising anything, and they ship in the bundle either way.
+ * Firestore security rules are what actually protect data.
+ */
+const firebaseConfig = {
+  apiKey: process.env.DOCS_FIREBASE_API_KEY || process.env.VITE_FIREBASE_API_KEY,
+  authDomain:
+    process.env.DOCS_FIREBASE_AUTH_DOMAIN ||
+    process.env.VITE_FIREBASE_AUTH_DOMAIN ||
+    process.env.VITE_AUTH_DOMAIN,
+  projectId:
+    process.env.DOCS_FIREBASE_PROJECT_ID ||
+    process.env.VITE_FIREBASE_PROJECT_ID ||
+    process.env.VITE_PROJECT_ID,
+};
+
+// A production build with no config would render the gate's error state for
+// every visitor. Fail the build instead — it's a far cheaper place to find out.
+if (process.env.NODE_ENV === 'production' && !firebaseConfig.apiKey) {
+  throw new Error(
+    'Firebase config missing. Set VITE_FIREBASE_API_KEY, VITE_AUTH_DOMAIN and ' +
+      'VITE_PROJECT_ID (or the DOCS_FIREBASE_* equivalents) in the environment ' +
+      'or in web/docs-site/.env. See docs/developers/deploying.md.',
+  );
+}
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -34,11 +69,12 @@ const config = {
   onBrokenLinks: 'throw',
 
   markdown: {
-    // `.md` files are parsed as plain CommonMark, `.mdx` as MDX. Without this,
-    // Docusaurus treats everything as MDX and chokes on the notification
-    // message tokens we quote constantly ({name}, {value}, {remaining}) by
-    // reading them as JavaScript expressions.
-    format: 'detect',
+    // Left as MDX (the default) on purpose. CommonMark mode looks tempting —
+    // it stops MDX reading the notification tokens we quote constantly
+    // (`{name}`, `{value}`, `{remaining}`) as JavaScript — but Docusaurus's
+    // admonition plugin doesn't run there, so every ::: callout silently
+    // renders as literal text. The callouts carry the warnings that matter
+    // most, so MDX wins and the tokens are wrapped in backticks instead.
     hooks: {
       onBrokenMarkdownLinks: 'warn',
     },
@@ -49,9 +85,8 @@ const config = {
     locales: ['en'],
   },
 
-  // Generates /llm/**.md, /llms.txt and /llms-full.txt into static/ so staff
-  // can hand any page to an AI assistant. See plugins/llm-export.js.
-  plugins: [llmExport],
+  // Baked into the bundle at build time, so changing one needs a redeploy.
+  customFields: {firebase: firebaseConfig},
 
   presets: [
     [
@@ -124,17 +159,8 @@ const config = {
             position: 'right',
           },
           {
-            // Raw HTML rather than a normal nav item: /_gate/signout is served
-            // by the edge gate, not by Docusaurus, so the link checker would
-            // (correctly) call it broken. An absolute URL would dodge that but
-            // hardcode the domain and break on deploy previews.
-            //
-            // Matters on a shared shop machine — though the session also ends
-            // on its own when the browser closes.
-            type: 'html',
+            type: 'custom-signOut',
             position: 'right',
-            value:
-              '<a class="navbar__item navbar__link" href="/_gate/signout">Sign out</a>',
           },
         ],
       },

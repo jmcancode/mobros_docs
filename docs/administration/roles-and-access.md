@@ -6,7 +6,7 @@ description: The grid editor that decides which staff role can open which screen
 
 # Settings → Roles & Access
 
-:::warning Gated by account, not by role
+:::warning[Gated by account, not by role]
 This screen is restricted to an explicit allowlist of accounts. **Not even a
 general Admin sees it** unless their account is on that list — deliberately, so
 control over who-can-see-what doesn't ride on a role anyone can be granted.
@@ -47,14 +47,14 @@ Each row has three shortcuts:
 ## Saving
 
 The toolbar shows **Unsaved changes** while you're editing, otherwise
-*Last updated {time} · {who}* or **Using default access** if nothing has been
+*Last updated `{time}` · `{who}`* or **Using default access** if nothing has been
 customised yet.
 
 **Save matrix** writes it. Because every signed-in dashboard subscribes to this
 record, the change takes effect **app-wide almost immediately** — people's
 sidebars change under them.
 
-:::caution An override replaces, it doesn't merge
+:::caution[An override replaces, it doesn't merge]
 Saving writes each role's complete tab list. There's no per-cell layering: if a
 new screen ships later, roles you've customised won't pick it up automatically.
 Come back and grant it.

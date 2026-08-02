@@ -6,7 +6,7 @@ description: Merchandising the app's Search feed — spotlight, rails, boost rul
 
 # Feed Studio
 
-:::info Requires the Feed Studio feature
+:::info[Requires the Feed Studio feature]
 See [Locked features](../getting-started/locked-features.md).
 :::
 
@@ -18,7 +18,7 @@ products come from a searchable picker, categories from a dropdown of your real
 games with product counts, tags from autocomplete.
 
 A status pill next to the title reads **Unpublished changes** while you're
-editing, or **Published {time}** once you've pushed.
+editing, or **Published `{time}`** once you've pushed.
 
 ## 1. Spotlight
 
@@ -84,7 +84,7 @@ rail, then the full grid.
 Everything you do is **local until you press Publish**. The button is disabled
 until something changes.
 
-:::danger Two people editing at once will overwrite each other
+:::danger[Two people editing at once will overwrite each other]
 Feed Studio loads the config once and replaces the whole document on publish.
 There's no merge and no warning — the last publish wins. Agree who's driving
 before you both open it.

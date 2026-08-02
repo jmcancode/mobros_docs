@@ -30,7 +30,7 @@ While offline, the status bar reads **Offline** / *No live break active*.
 
 **Go Live & Notify All Users** confirms first:
 
-> Go live on {channel} and notify ALL users? This sends a push notification to
+> Go live on `{channel}` and notify ALL users? This sends a push notification to
 > every user.
 
 This is a push to your **entire** user base. There's no audience filter here.
@@ -57,7 +57,7 @@ above to also post the update to Discord.* There's no webhook-only send.
 
 ## Ending a break
 
-**End Break** confirms *End {channel}? The live banner will be removed from the
+**End Break** confirms *End `{channel}`? The live banner will be removed from the
 app.*
 
 It clears the live state and the TikTok URL. **No push is sent** when a break

@@ -1,18 +1,26 @@
 /**
  * "Copy for AI" — one button, top-right of every doc page.
  *
- * Fetches the prompt-wrapped markdown that plugins/llm-export.js generated for
- * this page and puts it on the clipboard, so a staff member can paste it into
- * whichever assistant they already use and ask their question in plain English.
+ * Copies the page wrapped in a prompt preamble, so a staff member can paste it
+ * into ChatGPT / Claude / Gemini and ask a question without knowing anything
+ * about prompting. The copied text ends with `MY QUESTION:` so the paste leaves
+ * their cursor in the right place — that one detail is most of why this works
+ * for people who don't write prompts.
  *
- * The copied text ends with "My question:" so the paste leaves them with a
- * cursor in the right place. That one detail is most of why this works for
- * people who don't write prompts.
+ * The text is built from the rendered article, in the browser, at click time.
+ * The earlier version fetched a pre-generated `/llm/<page>.md` file, which was
+ * simpler — but those files (and `/llms-full.txt`, the entire manual in one
+ * request) sat on the CDN unauthenticated. Now that the site is behind a
+ * client-side sign-in gate, publishing a tidy plain-text copy of everything at
+ * a guessable URL would have made the gate pointless. Reading the DOM keeps the
+ * feature and removes the corpus.
+ *
+ * Side benefit: what gets copied is always exactly what's on screen.
  */
 
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useDoc} from '@docusaurus/plugin-content-docs/client';
-import useBaseUrl from '@docusaurus/useBaseUrl';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './styles.module.css';
 
 const RESET_MS = 2600;
@@ -38,39 +46,127 @@ async function copyText(text) {
   }
 }
 
+/** Turndown is ~30KB — load it on first click, not on every page view. */
+async function articleToMarkdown(article) {
+  const [{default: TurndownService}, {gfm}] = await Promise.all([
+    import('turndown'),
+    import('turndown-plugin-gfm'),
+  ]);
+
+  const turndown = new TurndownService({
+    headingStyle: 'atx',
+    codeBlockStyle: 'fenced',
+    bulletListMarker: '-',
+    emDelimiter: '*',
+  });
+  // Tables carry most of the real information in these docs — GFM keeps them.
+  turndown.use(gfm);
+
+  // Chrome for the reader, noise for a model.
+  turndown.remove(['script', 'style']);
+  turndown.addRule('stripUiChrome', {
+    filter: (node) =>
+      node.classList?.contains('theme-doc-toc-mobile') ||
+      node.classList?.contains('pagination-nav') ||
+      node.classList?.contains('theme-doc-breadcrumbs') ||
+      node.classList?.contains('hash-link') ||
+      node.getAttribute?.('aria-hidden') === 'true',
+    replacement: () => '',
+  });
+
+  // Admonitions carry the warnings that matter most ("bulk delete has no undo",
+  // "no confirmation on the refund toggle"). Flatten each to a labelled
+  // blockquote so both the severity and the body survive the trip — a model
+  // reading plain prose has no way to tell a danger callout from an aside.
+  turndown.addRule('admonition', {
+    filter: (node) =>
+      node.nodeName === 'DIV' &&
+      /(^|\s)theme-admonition(\s|$)/.test(node.className || ''),
+    replacement: (_content, node) => {
+      const type = /theme-admonition-(\w+)/.exec(node.className || '')?.[1];
+      const heading = node
+        .querySelector('[class*="admonitionHeading"]')
+        ?.textContent?.trim();
+      const content = node.querySelector('[class*="admonitionContent"]');
+
+      const label = [type?.toUpperCase(), heading].filter(Boolean).join(' — ');
+      // Recurse so tables and lists inside a callout keep their structure.
+      const body = turndown.turndown(content?.innerHTML || node.innerHTML);
+
+      return `\n\n> **${label || 'NOTE'}**\n>\n${body
+        .split('\n')
+        .map((line) => (line ? `> ${line}` : '>'))
+        .join('\n')}\n\n`;
+    },
+  });
+
+  return turndown
+    .turndown(article.innerHTML)
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+function buildPrompt({title, url, body}) {
+  return `You are helping a member of staff at MoBros TCG, a trading card game
+shop, use their admin dashboard (they call it the Command Center).
+
+Below is the official documentation for the screen they are asking about:
+"${title}".
+
+Answer their question using only this documentation. Quote the exact button and
+field names it uses, so they can find them on screen. If the documentation
+doesn't cover what they asked, say so plainly and suggest who to ask — don't
+guess at buttons, numbers, or behaviour that isn't described here.
+
+Keep answers short and practical. They are mid-task.
+
+Source: ${url}
+
+=== BEGIN DOCUMENTATION ===
+
+${body}
+
+=== END DOCUMENTATION ===
+
+Their question follows.
+
+IMPORTANT: if nothing follows the line below, they pasted this and pressed send
+before typing anything. Do not tell them their question is missing or ask them
+to resend — that is a dead end and they will assume the tool is broken. Instead,
+open with one sentence on what this screen is for, then offer four specific
+questions you could answer about it, drawn from the documentation above. Then
+wait for them.
+
+MY QUESTION:
+`;
+}
+
 export default function CopyForAI() {
   const {metadata} = useDoc();
+  const {siteConfig} = useDocusaurusContext();
   const [state, setState] = useState('idle'); // idle | working | done | error
   const timer = useRef(null);
-
-  const permalink = metadata.permalink === '/' ? '/index' : metadata.permalink;
-  const source = useBaseUrl(`/llm${permalink}.md`);
 
   useEffect(() => () => clearTimeout(timer.current), []);
 
   const onClick = useCallback(async () => {
     clearTimeout(timer.current);
-
-    // An expired session means the page is stale too — reloading lands on the
-    // sign-in wall, which is the honest thing to show rather than a bare
-    // "copy failed" the reader can't act on.
-    if (state === 'expired') {
-      window.location.reload();
-      return;
-    }
-
     setState('working');
 
     try {
-      const res = await fetch(source);
+      const article = document.querySelector('article .markdown');
+      if (!article) throw new Error('article not found in the DOM');
 
-      if (res.status === 401 || res.status === 403) {
-        setState('expired');
-        return; // No auto-reset: this one needs a deliberate click.
-      }
-      if (!res.ok) throw new Error(`${res.status} fetching ${source}`);
+      const body = await articleToMarkdown(article);
+      const origin = siteConfig.url?.replace(/\/$/, '') || '';
 
-      await copyText(await res.text());
+      await copyText(
+        buildPrompt({
+          title: metadata.title,
+          url: `${origin}${metadata.permalink === '/' ? '' : metadata.permalink}`,
+          body,
+        }),
+      );
       setState('done');
     } catch (err) {
       console.error('[CopyForAI]', err);
@@ -78,7 +174,7 @@ export default function CopyForAI() {
     }
 
     timer.current = setTimeout(() => setState('idle'), RESET_MS);
-  }, [source, state]);
+  }, [metadata, siteConfig]);
 
   const label = {
     idle: 'Copy for AI',
@@ -87,7 +183,6 @@ export default function CopyForAI() {
     // send with no question typed.
     done: 'Copied — paste, then ask',
     error: 'Copy failed',
-    expired: 'Session expired — sign in',
   }[state];
 
   return (
@@ -110,9 +205,7 @@ export default function CopyForAI() {
           ? 'Page copied to clipboard'
           : state === 'error'
             ? 'Copy failed'
-            : state === 'expired'
-              ? 'Your session expired. Activate to sign in again.'
-              : ''}
+            : ''}
       </span>
     </div>
   );
@@ -139,7 +232,7 @@ function Icon({state}) {
     );
   }
 
-  if (state === 'error' || state === 'expired') {
+  if (state === 'error') {
     return (
       <svg {...common}>
         <circle cx="12" cy="12" r="9" />

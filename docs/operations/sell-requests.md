@@ -41,7 +41,7 @@ Live — other people's changes appear without a refresh.
 | **No Show** | They never followed through |
 | **Declined** | Legacy value written by the mobile admin app. Displays, but you can't set it here. |
 
-:::warning "Approved" is not finished
+:::warning["Approved" is not finished]
 An approved submission stays open, because you're now waiting on the customer to
 actually ship the cards. It can still age into **Timed Out**. Don't treat
 Approved as a closed state.
@@ -125,7 +125,7 @@ exactly when you're chasing the shipment.
 
 Requests for someone to come look at a collection in person.
 
-:::note Not live
+:::note[Not live]
 Home Visits loads once and doesn't subscribe. Use the **Refresh** button to see
 someone else's changes.
 :::
@@ -188,7 +188,7 @@ Same mechanics as submissions, with one difference: the offer field is a
 **lump-sum offer for the whole lot**, and the badge reads `{x}% of est.` against
 the estimated total rather than a per-card market price.
 
-:::caution Upload threads lock differently
+:::caution[Upload threads lock differently]
 An upload thread only locks on **Completed** or **Declined**. Cancelled, timed
 out and no-show uploads stay writable — unlike submissions, where all of those
 lock. If a thread you expected to be closed is still open, this is why.

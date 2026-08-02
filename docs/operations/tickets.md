@@ -9,7 +9,7 @@ description: The customer support inbox — statuses, replies, assignment, and S
 Every ticket a customer files from the app, with the full reply thread. Live —
 new tickets and other people's replies appear without a refresh.
 
-Header: **Support Tickets** / *{n} total tickets*.
+Header: **Support Tickets** / *`{n}` total tickets*.
 
 ## Statuses
 
@@ -71,7 +71,7 @@ finished for SLA purposes but its thread stays open.
 
 A **Notes to Customer** box with **Save Notes**.
 
-:::caution Check before you rely on this field
+:::caution[Check before you rely on this field]
 The section is labelled *Notes to Customer* and the placeholder reads *Notes for
 the Customers*, but it saves into the record's **internal notes** field. Confirm
 with engineering whether the customer actually sees this before you put anything
@@ -90,7 +90,7 @@ in **Waiting Customer** pauses your clock and starts a **120-hour** customer
 window, with a reminder at **48 hours**. All four numbers are configurable in
 [Automations](./automations.md).
 
-:::caution Failures are quiet
+:::caution[Failures are quiet]
 Status changes, note saves, assignment and delete all fail silently — you'll see
 no error, the screen just won't change. Only the reply box surfaces an error
 when a send fails. If a status button appears to do nothing, refresh and check

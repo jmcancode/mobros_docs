@@ -51,7 +51,7 @@ Two paths:
 Either way, the change is picked up the next time you open the gated screen, so
 you may need to navigate away and back.
 
-:::note If billing is unreachable
+:::note[If billing is unreachable]
 When the dashboard can't reach the billing service it locks everything and adds
 the line *Couldn't reach the billing service — showing locked.* This is
 intentional fail-closed behaviour, not a sign your features were revoked. It

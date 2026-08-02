@@ -6,7 +6,7 @@ description: The free-shipping-on-first-order-of-the-day rule.
 
 # Shipping Automation
 
-:::info Requires the Free-Shipping Automation feature
+:::info[Requires the Free-Shipping Automation feature]
 Hidden until activated, and the backend re-checks the entitlement at run time —
 so the rule can't fire even if the page somehow renders. See
 [Locked features](../getting-started/locked-features.md).
@@ -42,7 +42,7 @@ This is **off by default**, and it's independent of the master toggle — you ca
 run the whole rule in detect-and-tag mode to see what it would have cost before
 arming it.
 
-:::danger No confirmation on this one
+:::danger[No confirmation on this one]
 There's no "are you sure" prompt. Flip the refund toggle, press **Save changes**,
 and real refunds start on the next qualifying order.
 :::

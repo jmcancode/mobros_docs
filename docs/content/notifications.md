@@ -11,7 +11,7 @@ description: Sending push notifications, targeting audiences, deep links, webhoo
 Three tabs: **Send**, **History**, and **Webhooks**. Going live is covered
 separately in [Live breaks](./live-breaks.md).
 
-:::note There is no scheduling
+:::note[There is no scheduling]
 Every send is immediate. There is no send-later, and there are no saved message
 templates — the **Notification Type** list sets a category, not prewritten copy.
 :::
@@ -68,7 +68,7 @@ Optional, any type. Must be a real `whatnot.com` URL — an invalid one shows
 *Enter a valid whatnot.com link, or clear the field.* and disables the send
 button.
 
-:::caution WhatNot beats the product link
+:::caution[WhatNot beats the product link]
 If you set both, the app warns you: *WhatNot link takes precedence — tapping the
 push opens WhatNot, not the attached product.* Pick one.
 :::
@@ -114,6 +114,6 @@ body, and badges for the type, the target (with the TCG filter appended), a
 > everything.
 
 Each row can be edited, enabled or disabled, sent a test message, or deleted
-(*Delete webhook "{name}"? This cannot be undone.*).
+(*Delete webhook "`{name}`"? This cannot be undone.*).
 
 Only **enabled Discord** webhooks appear in the Send tab's Discord picker.

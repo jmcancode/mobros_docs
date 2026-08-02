@@ -161,14 +161,14 @@ Removing an inventory-backed prize returns the quantity to stock.
 **Add spot** takes a buyer name, an optional email, and notes. Nothing is
 validated — a completely blank spot can be created, so be tidy.
 
-Removing a spot asks *Remove spot for {name}?*
+Removing a spot asks *Remove spot for `{name}`?*
 
 ## Awarding
 
 The **Award** button on a prize row asks who won it. If spots exist you pick
 from a dropdown; if not, you type a name.
 
-:::caution Awards are recorded by name, not by ID
+:::caution[Awards are recorded by name, not by ID]
 The winner is stored as text. Renaming a spot breaks the link, and two buyers
 with the same name are indistinguishable. Use emails or distinct names.
 :::

@@ -52,7 +52,7 @@ numbers). Save is disabled until the row is dirty and every value is valid.
 **Enter** in any cell saves that row; a saved row flashes briefly.
 
 **Add Category** creates a new one on the default ladder. Removing one asks
-*Remove "{Name}" condition multipliers?*
+*Remove "`{Name}`" condition multipliers?*
 
 ## Which category applies
 

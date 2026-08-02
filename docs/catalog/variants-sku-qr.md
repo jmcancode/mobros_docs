@@ -47,7 +47,7 @@ Confirmation reads `SKU generated: <sku> · pushed to Shopify`.
 The **Show QR code** button opens a panel with the code, the unit's internal ID,
 and the full URL it encodes.
 
-:::tip Regenerating a SKU never invalidates a printed sticker
+:::tip[Regenerating a SKU never invalidates a printed sticker]
 The QR always encodes the **internal ID**, not the SKU. Reprint labels only when
 a unit is new, never because you changed its SKU.
 :::
@@ -79,23 +79,23 @@ writes a plain-English preview of what will happen before you commit:
 | Warehouse → a shop | *Adds 3 to MoBros on Shopify.* |
 | A shop → Warehouse | *Removes 3 from MoBros on Shopify.* |
 | Shop → shop | *Moves 3 from A to B — two inventory writes, one per shop's own token.* |
-| Anything → a show | *Checks this unit out to {show} and de-lists it from every shop.* |
-| A show → anywhere | *Checks the show back in — every unit at {show} returns to the warehouse.* |
+| Anything → a show | *Checks this unit out to `{show}` and de-lists it from every shop.* |
+| A show → anywhere | *Checks the show back in — every unit at `{show}` returns to the warehouse.* |
 
 Show moves are whole-unit operations, so the **Qty** box disables and reads
 `all`.
 
 Errors you might hit: *Pick two different channels.*, *Quantity must be at least
-1.*, *Only N available in {channel}.*, *This unit is already checked out to a
+1.*, *Only N available in `{channel}`.*, *This unit is already checked out to a
 show.*
 
-:::danger Shop-to-shop transfers are not atomic
+:::danger[Shop-to-shop transfers are not atomic]
 Each leg runs against its own shop's credentials. If the second leg fails you'll
-see: *Removed 3 from A, but adding to B failed: {reason}. Re-add 3 there
+see: *Removed 3 from A, but adding to B failed: `{reason}`. Re-add 3 there
 manually.* You have to finish the move by hand.
 :::
 
-:::warning Check-in is show-wide
+:::warning[Check-in is show-wide]
 There's no per-unit check-in. Checking one unit back in from a show returns
 **every unit at that show** to the warehouse. The confirmation says so — read
 it.

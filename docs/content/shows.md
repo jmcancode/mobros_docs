@@ -11,7 +11,7 @@ description: The calendar of physical card shows — venues, budgets, and the pu
 The calendar of physical card shows MoBros attends: where, when, what booth,
 what it costs, and what you're looking to buy while you're there.
 
-:::note This is not about live streams
+:::note[This is not about live streams]
 Despite the name, Shows manages in-person events. Live streaming is under
 [Notifications → Live Break](./live-breaks.md).
 :::

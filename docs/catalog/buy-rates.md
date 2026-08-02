@@ -40,18 +40,18 @@ cancels.
 Both values must be numbers greater than 0 and no more than 100, and **base must
 be less than or equal to max**.
 
-:::caution Invalid input fails silently
+:::caution[Invalid input fails silently]
 If a value is out of range or base is above max, the save just… doesn't happen.
 No error appears. If a card refuses to save, check those two rules first.
 :::
 
-:::note If saving fails entirely
+:::note[If saving fails entirely]
 Buy Rates writes into an existing settings record and doesn't create one. On a
 brand-new install you may see *Failed to save rate.* until that record exists —
 a developer needs to seed it once.
 :::
 
-Removing a category asks *Remove "{Name}" from buy rates?*
+Removing a category asks *Remove "`{Name}`" from buy rates?*
 
 ## The notify prompt
 
@@ -67,7 +67,7 @@ to send.
   `💰 Buy Rate Update — {Category Name}`, and then tells you how many were
   delivered.
 
-:::tip Skip is a perfectly good answer
+:::tip[Skip is a perfectly good answer]
 You'll adjust rates far more often than customers need to hear about it. Only
 send when the change is worth a push to your entire user base.
 :::

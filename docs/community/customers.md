@@ -43,7 +43,7 @@ Inside the expanded view, a **Last 7 / 30 / 90 days** dropdown and a
 so it doesn't run unless you ask for it. Once loaded, the button becomes
 **Refresh**.
 
-:::note The 2,000-event ceiling
+:::note[The 2,000-event ceiling]
 The activity rollup reads at most 2,000 events in the window. Past that you'll
 see a note saying so, and the figures will understate reality — narrow to 7 days
 for accuracy.
@@ -66,7 +66,7 @@ Clicking anywhere else on a row opens that
 
 There are no bulk actions on this screen.
 
-:::note Sorting by name uses first name only
+:::note[Sorting by name uses first name only]
 A customer with only a display name and no first name sorts as blank.
 :::
 
@@ -85,7 +85,7 @@ The reason field is enforced for **point** adjustments — *A reason is required
 for point adjustments.* Fill it in regardless; it's the only record of why a
 balance moved.
 
-:::caution Store credit needs a linked Shopify account
+:::caution[Store credit needs a linked Shopify account]
 If the customer has no Shopify account you'll see *No Shopify account linked.
 Store credit requires the customer to have completed a Shopify checkout.* and
 the button is disabled. Points still work fine.

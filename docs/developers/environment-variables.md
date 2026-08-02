@@ -6,7 +6,7 @@ description: Every environment variable, per project.
 
 # Environment variables
 
-:::danger Never commit secrets
+:::danger[Never commit secrets]
 `.env` files are gitignored for a reason. Service account JSON, Stripe secret
 keys and Shopify access tokens have all leaked from repos before. If one gets
 committed, rotate it rather than just deleting the file.
@@ -93,41 +93,35 @@ SERVER_BASE_URL=https://your-backend.herokuapp.com
 
 ## Docs site (`web/docs-site`)
 
-Set in **Netlify → Site configuration → Environment variables**, not in a file.
-These are read by the edge gate at request time, so changing one takes effect on
-the next request — no rebuild needed.
+Three values, the Firebase web config for the sign-in gate. Locally they come
+from `web/docs-site/.env` (loaded by dotenv, gitignored); in production they
+come from Netlify's environment.
 
 ```bash
-# Signs the session cookie. Any long random string; rotating it signs
-# everyone out. Generate with: openssl rand -base64 48
-DOCS_SESSION_SECRET=
-
-# Backend base including /api — where the gate sends the ID token to check roles
-DOCS_API_URL=https://your-backend.herokuapp.com/api
-
-# Same public Firebase web config the dashboard uses
-DOCS_FIREBASE_API_KEY=
-DOCS_FIREBASE_AUTH_DOMAIN=
-DOCS_FIREBASE_PROJECT_ID=
-
-# Optional. Set the same value here and on the backend so only the gate can
-# call /api/docs-auth/me.
-DOCS_GATE_SECRET=
+VITE_FIREBASE_API_KEY=
+VITE_AUTH_DOMAIN=
+VITE_PROJECT_ID=
 ```
 
-:::danger DOCS_SESSION_SECRET is a real secret
-Anyone holding it can forge a session cookie and read the whole site. It is the
-one value here that isn't already public. Never put it in the repo, and rotate
-it if it's ever exposed — rotation is free, it just signs everyone out.
-:::
+The `VITE_` prefix means nothing to Docusaurus — it's kept because the rest of
+this repo is Vite, so a `.env` copied from the dashboard works unchanged. The
+`DOCS_FIREBASE_API_KEY` / `DOCS_FIREBASE_AUTH_DOMAIN` / `DOCS_FIREBASE_PROJECT_ID`
+spellings are also accepted and take precedence, if you'd rather be explicit
+about which site a variable belongs to.
 
-The gate **fails closed**: if any of the first four are missing it serves a 503
-to everyone rather than letting requests through. That's deliberate — a gate
-that opens when its config is missing is worse than no gate, because everyone
-assumes it's working.
+There are no secrets here. All three are public by design — they identify the
+Firebase project rather than authorising anything, and they ship in the bundle
+regardless. Firestore security rules are what actually protect data. The other
+Firebase values you'll see in a console snippet (`storageBucket`, `appId`,
+`measurementId`, …) aren't needed; auth and Firestore only want these three.
 
-Full setup, including the Firebase authorised-domain step, is in
-[Deploying](./deploying.md#the-sign-in-gate).
+**A production build with no config fails the build**, rather than deploying a
+site that shows every visitor an error screen.
+
+Leave them unset locally and `npm start` skips the gate entirely, so you can
+write docs without credentials — the navbar says **Gate off (dev)** so it's
+obvious. That bypass only applies to development builds; see
+[Deploying → The sign-in gate](./deploying.md#the-sign-in-gate).
 
 The production URL is set in `docusaurus.config.js`. If the site moves to a
 subdomain, three things change together: `url` there, `DOCS_URL` in the

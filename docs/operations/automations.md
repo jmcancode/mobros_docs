@@ -16,7 +16,7 @@ Reached from the **Automations** button on
 Saving is immediate and live everywhere — the timers on Sell Requests and
 Tickets pick up the new numbers straight away.
 
-:::warning If it says "showing defaults"
+:::warning[If it says "showing defaults"]
 When the config can't be loaded you'll see *Couldn't load automations. Showing
 defaults.* and the editor fills with the shipped defaults. **Don't save from
 that state** — you'll overwrite whatever the real config was with the defaults.
@@ -56,10 +56,10 @@ If a customer has no name on file, `{name}` renders as `there`.
 
 | Kind | Title | Body |
 | --- | --- | --- |
-| Sell List | `We got your cards! 📦` | *Thanks {name} — we received your {count}-item sell list (est. {value}). Our team will review it and send offers shortly.* |
-| Single Item | `Submission received ✅` | *Thanks {name} — we got {itemName} and will review it and send you an offer soon.* |
-| Collection | `Collection received 📚` | *Thanks {name} — your collection of {count} items (est. {value}) is in our queue. We'll review it and reach out shortly.* |
-| Home Visit | `Home visit request received 🏠` | *Thanks {name} — we got your home visit request for your {type} collection (est. {value}). Our team will reach out to coordinate.* |
+| Sell List | `We got your cards! 📦` | *Thanks `{name}` — we received your `{count}`-item sell list (est. `{value}`). Our team will review it and send offers shortly.* |
+| Single Item | `Submission received ✅` | *Thanks `{name}` — we got `{itemName}` and will review it and send you an offer soon.* |
+| Collection | `Collection received 📚` | *Thanks `{name}` — your collection of `{count}` items (est. `{value}`) is in our queue. We'll review it and reach out shortly.* |
+| Home Visit | `Home visit request received 🏠` | *Thanks `{name}` — we got your home visit request for your `{type}` collection (est. `{value}`). Our team will reach out to coordinate.* |
 
 ## 2. SLA watch
 
@@ -108,8 +108,8 @@ Same 1–2160 hour clamp. Setting the reminder at or after the close time shows
 
 Default title `Still want to sell? ⏳`, body:
 
-> Hey {name} — your {queue} request is still waiting on you. It'll close
-> automatically in {remaining} if we don't hear back.
+> Hey `{name}` — your `{queue}` request is still waiting on you. It'll close
+> automatically in `{remaining}` if we don't hear back.
 
 Tokens: `{name}` `{email}` `{queue}` `{remaining}`. Unlike the acknowledgment
 cards, these are shown for reference but aren't clickable — type them.

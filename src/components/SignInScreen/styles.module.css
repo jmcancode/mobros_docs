@@ -1,0 +1,135 @@
+/* Standalone by design: this renders before the Docusaurus layout exists, and
+   it's also the server-render fallback. Colours are hard-coded to the
+   dashboard's dark palette rather than Infima variables, so it looks right
+   before any theme has been applied. */
+
+.page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: #0a0a0a;
+  color: #f5f5f5;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto,
+    'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.card {
+  width: 100%;
+  max-width: 380px;
+  background: #141414;
+  border: 1px solid #2a2a2a;
+  border-radius: 14px;
+  padding: 32px 28px;
+  text-align: center;
+}
+
+.mark {
+  width: 46px;
+  height: 46px;
+  margin: 0 auto 18px;
+  border-radius: 11px;
+  background: #eab308;
+  color: #0a0a0a;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.sub {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #a1a1aa;
+}
+
+.button {
+  margin-top: 22px;
+  width: 100%;
+  padding: 11px 16px;
+  border-radius: 10px;
+  border: 1px solid #333;
+  background: #1c1c1c;
+  color: #f5f5f5;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+
+.button:hover:not(:disabled) {
+  background: #242424;
+  border-color: #3f3f3f;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.button:focus-visible {
+  outline: 2px solid #eab308;
+  outline-offset: 2px;
+}
+
+.note {
+  margin-top: 16px;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: left;
+  border-radius: 9px;
+  padding: 11px 13px;
+}
+
+.noteError {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+
+.noteError strong {
+  color: #fecaca;
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  margin: 20px auto 4px;
+  border-radius: 50%;
+  border: 2px solid #2a2a2a;
+  border-top-color: #eab308;
+  animation: spin 700ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 2.4s;
+  }
+}
+
+.foot {
+  margin: 20px 0 0;
+  font-size: 12px;
+  color: #71717a;
+}

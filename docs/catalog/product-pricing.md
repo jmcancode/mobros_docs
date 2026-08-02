@@ -76,7 +76,7 @@ This is a session setting. It isn't saved.
 
 Hover any card for the worked formula.
 
-:::caution Two quirks in the totals
+:::caution[Two quirks in the totals]
 **Rows with a blank TCG_ID are excluded from every KPI.** They still show in the
 grid and still count in the row-level maths, but they contribute nothing to Cost
 basis, Market value, or anything else up top. If your totals look low, check for
@@ -100,7 +100,7 @@ The **Filters** panel adds:
 - **Days held** — a min/max range
 - **Quick filters** — Unpriced, Stale (>180d), Underwater, Missing from Shopify
 
-:::note "Clear all" misses one
+:::note["Clear all" misses one]
 **Clear all** doesn't clear the **Missing from Shopify** quick filter, even
 though the filter badge counts it. Un-click that chip by hand.
 :::
@@ -145,7 +145,7 @@ price. It's checkbox-gated:
 Fields you can apply: Status, Style, Set, Source, Cost, Market price, Sell price
 override, Notes (replaces).
 
-:::warning Bulk delete has no undo
+:::warning[Bulk delete has no undo]
 Deleting a **single** row shows a toast with an **Undo** button for about six
 seconds. Bulk delete just asks *Delete N selected row(s)? This cannot be
 undone.* and means it.
@@ -204,7 +204,7 @@ just the ones currently filtered or visible.
 status, item name, tcg_id, style, set, series, quantity, notes, and
 price_paid_each.
 
-:::caution The import doesn't bring prices
+:::caution[The import doesn't bring prices]
 Only **cost** is imported. Market price and sell price are ignored — market
 comes from TCG sync, and sell price is a deliberate decision, not spreadsheet
 data.

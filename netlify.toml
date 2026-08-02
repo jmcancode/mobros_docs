@@ -4,10 +4,11 @@
 # `web/docs-site` in the UI. Netlify then reads this file from that directory
 # and every path below is relative to it.
 #
-# This site is PRIVATE. `netlify/edge-functions/gate.ts` runs on every request
-# and refuses anything without a valid staff session — see that file's header
-# for the required environment variables, and docs/developers/deploying.md for
-# the full setup.
+# Access is handled in the browser by src/theme/Root — Google sign-in plus an
+# admin check against the same Firestore user record the dashboard reads. There
+# is deliberately no edge function: it would run on every asset request and
+# meter accordingly. See docs/developers/deploying.md for what that trade buys
+# and costs.
 
 [build]
   command = "npm run build"
@@ -19,8 +20,6 @@
   NODE_VERSION = "20"
   NPM_FLAGS = "--prefer-offline --no-audit --no-fund"
 
-# Deploy previews and branch builds run the same build — and, importantly, the
-# same gate. A preview URL is not a way around the sign-in wall.
 [context.deploy-preview]
   command = "npm run build"
 
@@ -28,11 +27,29 @@
   command = "npm run build"
 
 # ── Headers ────────────────────────────────────────────────────────────────
-# Cache-Control is deliberately NOT set here. The edge function owns it, and
-# marks every gated response `private` so a signed-in reader's content can't be
-# served from a shared cache to someone without a session. Setting a public
-# cache header here would be overridden anyway, and would read as if this site
-# were still public.
+# The page shells are near-empty — the gate renders client-side, so the content
+# arrives with the JS. Assets are fingerprinted and safe to cache hard; the
+# shells must not be, or a deploy won't reach anyone.
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
 
 [[headers]]
   for = "/*"
@@ -41,7 +58,8 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
-    # Belt and braces alongside the meta tag and the edge function's header.
+    # Keep the site out of search results. Belt and braces with the meta tag
+    # Docusaurus emits from `noIndex: true`.
     X-Robots-Tag = "noindex, nofollow, noarchive"
 
 # ── Redirects ──────────────────────────────────────────────────────────────

@@ -19,7 +19,7 @@ assistant you already use, and type your question like you'd ask a coworker.
 4. Paste (`⌘V` on a Mac, `Ctrl+V` on Windows).
 5. **Type your question at the bottom, then send.**
 
-:::tip Step 5 is the one people miss
+:::tip[Step 5 is the one people miss]
 The paste is long, so it's easy to hit send as soon as it lands. Type your
 question first — the paste ends with `MY QUESTION:` and your cursor is already
 in the right place.
@@ -66,12 +66,10 @@ just keep asking.
 Some questions cross screens: *"a customer bought a game spot and now wants to
 sell us cards — what happens on our side?"*
 
-For those, grab the whole manual instead. It's one file at
-**[/llms-full.txt](https://mobrostc.info/llms-full.txt)** — open it while
-signed in, select all, copy, paste. It's long, but every current assistant
-handles it comfortably.
+For those, copy each page you need in turn and paste them one after another
+before asking. Most assistants handle three or four pages comfortably.
 
-:::note Give it the text, not the link
+:::note[Give it the text, not the link]
 This site is behind staff sign-in, so an assistant can't open a page for you —
 it isn't signed in, and it never will be. Pasting a link gets you a made-up
 answer based on the URL.
@@ -92,7 +90,7 @@ The assistant is reading documentation. It is not connected to the dashboard.
 Anything involving real money — refunds, rate changes, marking a game complete
 — check with a manager rather than an assistant.
 
-:::caution Don't paste customer information into it
+:::caution[Don't paste customer information into it]
 Copying a page is fine, it's public documentation. Typing a customer's name,
 email, address or order details into a public AI tool is not. Describe the
 situation without the identifying details: *"a customer's submission"*, not
@@ -101,12 +99,12 @@ situation without the identifying details: *"a customer's submission"*, not
 
 ## If the button doesn't work
 
-If it says **Session expired — sign in**, your sign-in has timed out. Press the
-button again and you'll land back on the sign-in screen; sign in and carry on.
-Sessions last about half a day and end when you close your browser.
+Press it once more — the first press occasionally fires before the page has
+finished loading.
 
-If it says **Copy failed**, press it once more — the first press occasionally
-fires before the page has finished loading. Still failing? Select the page text
-with your mouse and copy it the normal way. That works fine; you'll just be
-pasting the page without the instruction block, so add a line like *"answer
-using only the documentation below"* yourself.
+Still failing? Select the page text with your mouse and copy it the normal way.
+That works fine; you'll just be pasting the page without the instruction block,
+so add a line like *"answer using only the documentation below"* yourself.
+
+If you're seeing the sign-in screen instead of the page, your session ended —
+sign in again and carry on.

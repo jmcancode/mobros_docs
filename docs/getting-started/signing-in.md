@@ -39,7 +39,7 @@ in order:
    record and is edited from
    [Customer Detail → Roles & permissions](../community/customer-detail.md#roles--permissions).
 
-:::warning Login is stricter than the rest of the app
+:::warning[Login is stricter than the rest of the app]
 The route guards inside the dashboard are written to admit any staff role, but
 the **login screen itself currently requires the Admin flag**. In practice that
 means non-admin staff can't get past sign-in yet, even if their role would give
@@ -69,14 +69,9 @@ These docs are staff-only too, and they use the same Google account. The first
 time you open them you'll get a **Sign in with Google** card — pick the same
 account you use for the dashboard and you're in.
 
-A few differences worth knowing:
+It's the same check as the dashboard: your account needs the Admin flag. If
+sign-in is rejected here but works there, it's the same fix — check which Google
+account the chooser picked.
 
-- The docs accept **any staff role**, not just Admin. If the dashboard lets you
-  in, the docs will.
-- Your docs session lasts about half a day and ends when you close your
-  browser. On a shared shop machine, closing the browser signs you out.
-- There's a **Sign out** link in the top right of the docs if you need to
-  switch accounts or hand the machine to someone else.
-
-If sign-in is rejected here but works on the dashboard, it's the same fix: check
-which Google account the chooser picked.
+There's a **Sign out** link in the top right if you need to switch accounts or
+hand a shared machine to someone else.

@@ -3,6 +3,11 @@
 # The repo is a monorepo, so the Netlify site's *Base directory* must be set to
 # `web/docs-site` in the UI. Netlify then reads this file from that directory
 # and every path below is relative to it.
+#
+# This site is PRIVATE. `netlify/edge-functions/gate.ts` runs on every request
+# and refuses anything without a valid staff session — see that file's header
+# for the required environment variables, and docs/developers/deploying.md for
+# the full setup.
 
 [build]
   command = "npm run build"
@@ -14,8 +19,8 @@
   NODE_VERSION = "20"
   NPM_FLAGS = "--prefer-offline --no-audit --no-fund"
 
-# Deploy previews and branch builds: same build, but don't let a preview get
-# indexed if the domain is ever pointed at one.
+# Deploy previews and branch builds run the same build — and, importantly, the
+# same gate. A preview URL is not a way around the sign-in wall.
 [context.deploy-preview]
   command = "npm run build"
 
@@ -23,29 +28,11 @@
   command = "npm run build"
 
 # ── Headers ────────────────────────────────────────────────────────────────
-# Docusaurus fingerprints everything under /assets, so those are safe to cache
-# forever. HTML must never be cached, or a content change won't reach anyone
-# until their browser feels like it.
-
-[[headers]]
-  for = "/assets/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/img/*"
-  [headers.values]
-    Cache-Control = "public, max-age=604800"
-
-[[headers]]
-  for = "/*.html"
-  [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
-
-[[headers]]
-  for = "/"
-  [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
+# Cache-Control is deliberately NOT set here. The edge function owns it, and
+# marks every gated response `private` so a signed-in reader's content can't be
+# served from a shared cache to someone without a session. Setting a public
+# cache header here would be overridden anyway, and would read as if this site
+# were still public.
 
 [[headers]]
   for = "/*"
@@ -54,6 +41,8 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    # Belt and braces alongside the meta tag and the edge function's header.
+    X-Robots-Tag = "noindex, nofollow, noarchive"
 
 # ── Redirects ──────────────────────────────────────────────────────────────
 # Deliberately NO SPA catch-all. Docusaurus emits a real HTML file per route,

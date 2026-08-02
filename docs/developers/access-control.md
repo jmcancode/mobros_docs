@@ -123,6 +123,18 @@ The locked panel reads its copy from `src/data/featureContent.js` — title,
 tagline, what it does, why it matters, and the preview wireframe shape. Unknown
 keys fall back to a generic shape and a generic line.
 
+## A third surface: the docs site
+
+The documentation site reuses the role system rather than inventing one. Its
+Netlify edge gate posts a Firebase ID token to `GET /api/docs-auth/me`, which is
+guarded by `verifyToken` + `verifyStaff` — so docs access is exactly "holds any
+staff role" and can't drift from dashboard access.
+
+Note the bar is deliberately lower than the dashboard's current login, which
+still demands `isAdmin`. Once that's relaxed, the two line up exactly.
+
+Details in [Deploying → The sign-in gate](./deploying.md#the-sign-in-gate).
+
 ## Adding a new gated screen
 
 1. Add a tab entry to `TABS` in `accessMatrix.js` with a key, label, section and

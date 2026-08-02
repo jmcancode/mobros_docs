@@ -3,6 +3,7 @@
 // Docs: https://docusaurus.io/docs
 
 import {themes as prismThemes} from 'prism-react-renderer';
+import llmExport from './plugins/llm-export.js';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -21,6 +22,12 @@ const config = {
 
   organizationName: 'mobros',
   projectName: 'mobros-docs',
+
+  // Private site — everything sits behind the staff sign-in gate in
+  // netlify/edge-functions/gate.ts. `noIndex` adds a robots meta tag to every
+  // page; the gate and netlify.toml add the matching header. A crawler can't
+  // reach these pages anyway, but saying so costs nothing.
+  noIndex: true,
 
   // A docs site that lies is worse than no docs site — fail the build on
   // broken links rather than shipping them.
@@ -41,6 +48,10 @@ const config = {
     defaultLocale: 'en',
     locales: ['en'],
   },
+
+  // Generates /llm/**.md, /llms.txt and /llms-full.txt into static/ so staff
+  // can hand any page to an AI assistant. See plugins/llm-export.js.
+  plugins: [llmExport],
 
   presets: [
     [
@@ -63,13 +74,9 @@ const config = {
         theme: {
           customCss: './src/css/custom.css',
         },
-        sitemap: {
-          // `lastmod` is intentionally off: it reads git commit dates, which
-          // breaks the build outside a git worktree. Turn it on alongside
-          // `showLastUpdateTime` once this folder is committed.
-          changefreq: 'weekly',
-          priority: 0.5,
-        },
+        // No sitemap: the site is private, so a machine-readable index of
+        // every page would be all downside.
+        sitemap: false,
       }),
     ],
   ],
@@ -115,6 +122,19 @@ const config = {
             href: 'https://admin.mobrostc.info',
             label: 'Open the dashboard',
             position: 'right',
+          },
+          {
+            // Raw HTML rather than a normal nav item: /_gate/signout is served
+            // by the edge gate, not by Docusaurus, so the link checker would
+            // (correctly) call it broken. An absolute URL would dodge that but
+            // hardcode the domain and break on deploy previews.
+            //
+            // Matters on a shared shop machine — though the session also ends
+            // on its own when the browser closes.
+            type: 'html',
+            position: 'right',
+            value:
+              '<a class="navbar__item navbar__link" href="/_gate/signout">Sign out</a>',
           },
         ],
       },

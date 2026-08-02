@@ -62,3 +62,21 @@ sign-out. This is normal after leaving the tab open overnight; just sign in
 again.
 
 To sign out on purpose, use **Sign Out** at the bottom of the sidebar.
+
+## Signing in to this documentation site
+
+These docs are staff-only too, and they use the same Google account. The first
+time you open them you'll get a **Sign in with Google** card — pick the same
+account you use for the dashboard and you're in.
+
+A few differences worth knowing:
+
+- The docs accept **any staff role**, not just Admin. If the dashboard lets you
+  in, the docs will.
+- Your docs session lasts about half a day and ends when you close your
+  browser. On a shared shop machine, closing the browser signs you out.
+- There's a **Sign out** link in the top right of the docs if you need to
+  switch accounts or hand the machine to someone else.
+
+If sign-in is rejected here but works on the dashboard, it's the same fix: check
+which Google account the chooser picked.

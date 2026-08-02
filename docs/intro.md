@@ -15,31 +15,31 @@ they want to sell, support tickets they file, points they earn, breaks they
 watch. Everything the shop pushes back out — pricing, notifications, games,
 giveaways, the app's home feed — starts here too.
 
-It lives at **[admin.mobrostc.info](https://admin.mobrostc.info)** and you sign
+It lives at **[https://mobros-admin.netlify.app](https://mobros-admin.netlify.app)** and you sign
 in with your MoBros Google account.
 
 ## Pick your path
 
-| If you… | Start with |
-| --- | --- |
-| Work a shift and need to get something done today | [Signing in](./getting-started/signing-in.md), then [Navigating the dashboard](./getting-started/navigating.md) |
-| Manage the shop and set policy | [Roles & Access](./administration/roles-and-access.md), [Buy Rates](./catalog/buy-rates.md), [Rewards](./community/rewards.md) |
-| Own the business and pay the bills | [Billing](./administration/billing.md), [Dashboard](./operations/dashboard.md) |
-| Build, deploy, or debug it | [Developer docs](./developers/index.md) |
+| If you…                                           | Start with                                                                                                                     |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Work a shift and need to get something done today | [Signing in](./getting-started/signing-in.md), then [Navigating the dashboard](./getting-started/navigating.md)                |
+| Manage the shop and set policy                    | [Roles & Access](./administration/roles-and-access.md), [Buy Rates](./catalog/buy-rates.md), [Rewards](./community/rewards.md) |
+| Own the business and pay the bills                | [Billing](./administration/billing.md), [Dashboard](./operations/dashboard.md)                                                 |
+| Build, deploy, or debug it                        | [Developer docs](./developers/index.md)                                                                                        |
 
 ## How the dashboard is organised
 
 The sidebar groups every screen into five sections, and this documentation
 follows the same shape so you can read it the way you use it.
 
-| Sidebar section | Screens | Documentation |
-| --- | --- | --- |
-| *(top)* | Dashboard | [Daily operations](./operations/dashboard.md) |
-| **Operations** | Sell Requests, Tickets, Intake Processing, Shipping | [Daily operations](./operations/sell-requests.md) |
-| **Catalog** | Buy Rates, Product Pricing, Feed Studio | [Catalog & pricing](./catalog/product-pricing.md) |
-| **Community** | Customers, Rewards, Games, Giveaways | [Community](./community/customers.md) |
-| **Content** | Notifications, Hit Feed | [Content & marketing](./content/notifications.md) |
-| **Admin** | Settings, Activation | [Administration](./administration/roles-and-access.md) |
+| Sidebar section | Screens                                             | Documentation                                          |
+| --------------- | --------------------------------------------------- | ------------------------------------------------------ |
+| _(top)_         | Dashboard                                           | [Daily operations](./operations/dashboard.md)          |
+| **Operations**  | Sell Requests, Tickets, Intake Processing, Shipping | [Daily operations](./operations/sell-requests.md)      |
+| **Catalog**     | Buy Rates, Product Pricing, Feed Studio             | [Catalog & pricing](./catalog/product-pricing.md)      |
+| **Community**   | Customers, Rewards, Games, Giveaways                | [Community](./community/customers.md)                  |
+| **Content**     | Notifications, Hit Feed                             | [Content & marketing](./content/notifications.md)      |
+| **Admin**       | Settings                                            | [Administration](./administration/roles-and-access.md) |
 
 ## Two things decide what you see
 
@@ -55,6 +55,14 @@ enormously to know which one is biting you.
 
 Both fail closed. If something isn't granted, you don't get it — there is no
 state where an ungranted screen accidentally appears.
+
+## In a hurry? Ask instead of reading
+
+Every page has a **Copy for AI** button in the top right. Press it, paste into
+ChatGPT, Claude or Gemini, and ask your question in plain English — it comes
+with instructions attached, so you don't need to know anything about prompts.
+
+See [Ask an AI for help](./getting-started/ask-an-ai.md).
 
 ## Three habits worth building
 

@@ -69,5 +69,5 @@ check re-runs when you open a gated screen.
 
 - [Locked features](../getting-started/locked-features.md) — what a locked
   screen looks like and why
-- [Activation](./activation.md) — the developer-side controls for trials and
-  manual overrides
+- [Roles & Access](./roles-and-access.md) — the other gate, and why a screen can
+  be hidden even when it's paid for

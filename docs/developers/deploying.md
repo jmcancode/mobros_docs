@@ -46,6 +46,95 @@ carries the build settings — you shouldn't need to type them into the UI.
   route, so there is deliberately **no SPA catch-all redirect** — a genuinely
   wrong URL should 404, not silently render the homepage.
 
+### The sign-in gate
+
+The docs site is private. `netlify/edge-functions/gate.ts` runs at the edge on
+every request and refuses anything without a valid staff session.
+
+**Why at the edge and not in the app.** This is a static site. A login screen
+inside React would protect the rendered pages and nothing else — `/llms-full.txt`
+and every `/llm/*.md` file would still be one `curl` away, and those contain the
+entire manual in plain text. Enforcing before Netlify serves the byte is the only
+version of this that's real.
+
+**How a sign-in goes:**
+
+1. No session cookie → the edge function returns the sign-in page itself. It's
+   inline HTML with no dependency on site assets, because allowlisting
+   `/assets/*` would leak everything (Docusaurus bundles page text into JS
+   chunks).
+2. The page runs Google sign-in and POSTs the Firebase ID token to
+   `/_gate/session`.
+3. The gate forwards that token to `GET /api/docs-auth/me` on the backend, which
+   verifies it with the Admin SDK and checks the Firestore `roles` map — the same
+   source of truth the dashboard uses. Grant someone a staff role and their docs
+   access follows; there's no second list.
+4. On success the gate mints its own HMAC-signed cookie. Every later request is
+   verified locally at the edge, so there's no backend round-trip per asset.
+
+The bar is **any staff role**, not Admin — see
+[`verifyStaff`](./access-control.md#backend-guards).
+
+#### Setting it up
+
+**1. Deploy the backend.** `backend/routes/docs-auth.routes.js` is mounted in
+`index.js` at `/api/docs-auth`. Nothing works until this is live.
+
+**2. Generate a session secret.**
+
+```bash
+openssl rand -base64 48
+```
+
+**3. Set the Netlify environment variables** (Site configuration →
+Environment variables). Full list in
+[Environment variables](./environment-variables.md#docs-site-webdocs-site):
+`DOCS_SESSION_SECRET`, `DOCS_API_URL`, `DOCS_FIREBASE_API_KEY`,
+`DOCS_FIREBASE_AUTH_DOMAIN`, `DOCS_FIREBASE_PROJECT_ID`, and optionally
+`DOCS_GATE_SECRET`.
+
+**4. Authorise the domain in Firebase.** Firebase Console → Authentication →
+Settings → **Authorized domains** → add `mobrostc.info`.
+
+:::warning This is the step that gets missed
+Skip it and sign-in fails with `auth/unauthorized-domain` — the page says so
+explicitly, but only after someone has already tried and been confused. Do it
+before you tell anyone the site is live. Add the Netlify `*.netlify.app` domain
+too if you want deploy previews to be signable-in.
+:::
+
+**5. Deploy and test in a private window.** You should get the sign-in card, not
+the docs. Then check the parts people forget:
+
+```bash
+curl -si https://mobrostc.info/llms-full.txt | head -1   # expect 401
+curl -si https://mobrostc.info/llm/intro.md   | head -1   # expect 401
+```
+
+If either returns 200, the gate isn't running — check that Netlify picked up the
+edge function (it looks in `<base>/netlify/edge-functions`, so
+`web/docs-site/netlify/edge-functions`).
+
+#### Operating it
+
+| Task | How |
+| --- | --- |
+| Sign everyone out | Change `DOCS_SESSION_SECRET`. Takes effect immediately, no rebuild |
+| Revoke one person | Remove their staff roles — same as revoking dashboard access. Their current session lasts until it expires (≤12h) |
+| Sign out on this machine | The **Sign out** link, top right. Sessions also end when the browser closes |
+| Change session length | `SESSION_HOURS` in `gate.ts` |
+
+**Deploy previews are gated too** — same build, same edge function. A preview URL
+is not a way around the wall.
+
+**Invocation cost:** the gate runs on `/*`, so it fires for every asset request,
+not just page views. That's necessary — the JS chunks contain the content — but
+it means edge function invocations scale with traffic. Fine for a shop team;
+worth knowing if the audience ever grows.
+
+**Local development runs ungated.** `npm start` doesn't run edge functions. Use
+`netlify dev` if you need to exercise the gate locally.
+
 ### The custom domain
 
 Point `mobrostc.info` at the docs site in **Domain management**. Netlify

@@ -32,6 +32,7 @@ const sidebars = {
         'getting-started/navigating',
         'getting-started/what-you-can-see',
         'getting-started/locked-features',
+        'getting-started/ask-an-ai',
       ],
     },
     {
@@ -85,7 +86,6 @@ const sidebars = {
       items: [
         'administration/roles-and-access',
         'administration/billing',
-        'administration/activation',
       ],
     },
     referenceCategory,

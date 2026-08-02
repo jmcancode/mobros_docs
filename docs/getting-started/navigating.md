@@ -21,7 +21,7 @@ is grouped into sections:
 | **Catalog** | **Buy Rates**, **Product Pricing**, **Feed Studio** |
 | **Community** | **Customers**, **Rewards**, **Games**, **Giveaways** |
 | **Content** | **Notifications**, **Hit Feed** |
-| **Admin** | **Settings**, **Activation** |
+| **Admin** | **Settings** |
 
 A section with no visible items disappears entirely — so your sidebar will be
 shorter than the table above unless you're an admin. See

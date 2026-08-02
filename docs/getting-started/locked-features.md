@@ -39,16 +39,17 @@ in the system still sees the lock panel until the feature is activated.
 
 ## How a feature gets unlocked
 
-Two paths, both covered in [Administration](../administration/billing.md):
+Two paths:
 
-- **Purchase.** Any admin can go to **Settings → Billing**, tick the features
-  they want, and pay by card. Each one activates the moment payment clears.
-- **Trial.** The developer account can start a trial on any feature from the
-  [Activation](../administration/activation.md) page. A trial turns the feature
-  on but it stays owed — it still counts toward the outstanding balance.
+- **Purchase.** Any admin can go to
+  [Settings → Billing](../administration/billing.md), tick the features they
+  want, and pay by card. Each one activates the moment payment clears.
+- **Trial.** A feature can be switched on for a trial period so you can try it
+  before committing. Ask about a trial and it gets enabled on your account — it
+  stays owed while it's running, so it still counts toward your balance.
 
-Activation is picked up the next time you open the gated screen, so you may need
-to navigate away and back.
+Either way, the change is picked up the next time you open the gated screen, so
+you may need to navigate away and back.
 
 :::note If billing is unreachable
 When the dashboard can't reach the billing service it locks everything and adds

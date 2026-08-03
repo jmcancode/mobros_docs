@@ -137,10 +137,6 @@ const config = {
       },
       navbar: {
         title: "MoBros Admin Docs",
-        logo: {
-          alt: "MoBros",
-          src: "/build/img/logo.svg",
-        },
         items: [
           {
             type: "docSidebar",

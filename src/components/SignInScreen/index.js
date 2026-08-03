@@ -65,7 +65,6 @@ export default function SignInScreen({ status, detail, onSignIn, onSignOut }) {
     <div className={styles.page}>
       <main className={styles.card}>
         <h1 className={styles.title}>MoBros Admin Docs</h1>
-
         {checking && (
           <>
             <p className={styles.sub} role="status">

@@ -160,7 +160,7 @@ const config = {
             label: "Reference",
           },
           {
-            href: "https://admin.mobrostc.info",
+            href: "https://mobros-admin.netlify.app",
             label: "Open the dashboard",
             position: "right",
           },

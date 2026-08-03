@@ -51,7 +51,7 @@ if (process.env.NODE_ENV === "production" && missingFirebaseKeys.length) {
 const config = {
   title: "MoBros Admin Docs",
   tagline: "How to run the shop from the Command Center",
-  favicon: "img/favicon.ico",
+  favicon: "/build/img/favicon.ico",
 
   future: {
     v4: true,
@@ -139,7 +139,7 @@ const config = {
         title: "MoBros Admin Docs",
         logo: {
           alt: "MoBros",
-          src: "img/logo.svg",
+          src: "/build/img/logo.svg",
         },
         items: [
           {

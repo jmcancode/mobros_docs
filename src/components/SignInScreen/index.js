@@ -5,43 +5,43 @@
  * render identically at build time.
  */
 
-import React, {useEffect, useState} from 'react';
-import styles from './styles.module.css';
+import React, { useEffect, useState } from "react";
+import styles from "./styles.module.css";
 
 const MESSAGES = {
-  'auth/popup-blocked':
-    'Your browser blocked the sign-in popup. Allow popups for this site and try again.',
-  'auth/unauthorized-domain':
-    'This domain isn’t authorised in Firebase yet. An admin needs to add it under Authentication → Settings → Authorized domains.',
-  'auth/network-request-failed':
-    'Couldn’t reach Google. Check your connection and try again.',
+  "auth/popup-blocked":
+    "Your browser blocked the sign-in popup. Allow popups for this site and try again.",
+  "auth/unauthorized-domain":
+    "This domain isn’t authorised in Firebase yet. An admin needs to add it under Authentication → Settings → Authorized domains.",
+  "auth/network-request-failed":
+    "Couldn’t reach Google. Check your connection and try again.",
 };
 
 // Closing the popup isn't an error — it's someone changing their mind.
-const SILENT = ['auth/popup-closed-by-user', 'auth/cancelled-popup-request'];
+const SILENT = ["auth/popup-closed-by-user", "auth/cancelled-popup-request"];
 
-export default function SignInScreen({status, detail, onSignIn, onSignOut}) {
+export default function SignInScreen({ status, detail, onSignIn, onSignOut }) {
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   // Signing in successfully but being refused leaves this screen mounted — it
   // swaps from "sign in" to "denied" rather than unmounting. Without this the
   // button stays stuck on "Switching…", disabled, with no way forward.
   useEffect(() => {
     setBusy(false);
-    setError('');
+    setError("");
   }, [status]);
 
   const handleSignIn = async () => {
     setBusy(true);
-    setError('');
+    setError("");
     try {
       await onSignIn();
       // On success the auth listener in Root takes over and swaps this out.
     } catch (err) {
-      console.error('[docs-gate] sign-in failed', err);
+      console.error("[docs-gate] sign-in failed", err);
       if (!SILENT.includes(err?.code)) {
-        setError(MESSAGES[err?.code] || 'Sign-in failed. Please try again.');
+        setError(MESSAGES[err?.code] || "Sign-in failed. Please try again.");
       }
       setBusy(false);
     }
@@ -49,24 +49,21 @@ export default function SignInScreen({status, detail, onSignIn, onSignOut}) {
 
   const handleSignOut = async () => {
     setBusy(true);
-    setError('');
+    setError("");
     try {
       await onSignOut();
     } catch (err) {
-      console.error('[docs-gate] sign-out failed', err);
-      setError('Couldn’t sign out. Reload the page and try again.');
+      console.error("[docs-gate] sign-out failed", err);
+      setError("Couldn’t sign out. Reload the page and try again.");
     }
     setBusy(false);
   };
 
-  const checking = status === 'checking';
+  const checking = status === "checking";
 
   return (
     <div className={styles.page}>
       <main className={styles.card}>
-        <div className={styles.mark} aria-hidden="true">
-          M
-        </div>
         <h1 className={styles.title}>MoBros Admin Docs</h1>
 
         {checking && (
@@ -78,7 +75,7 @@ export default function SignInScreen({status, detail, onSignIn, onSignOut}) {
           </>
         )}
 
-        {status === 'signed-out' && (
+        {status === "signed-out" && (
           <>
             <p className={styles.sub}>
               Sign in with the same Google account you use for the dashboard.
@@ -90,12 +87,12 @@ export default function SignInScreen({status, detail, onSignIn, onSignOut}) {
               disabled={busy}
             >
               <GoogleMark />
-              <span>{busy ? 'Signing in…' : 'Sign in with Google'}</span>
+              <span>{busy ? "Signing in…" : "Sign in with Google"}</span>
             </button>
           </>
         )}
 
-        {status === 'denied' && (
+        {status === "denied" && (
           <>
             <p className={`${styles.note} ${styles.noteError}`} role="alert">
               {detail ? (
@@ -103,8 +100,8 @@ export default function SignInScreen({status, detail, onSignIn, onSignOut}) {
                   <strong>{detail}</strong> doesn’t have access to the docs.
                 </>
               ) : (
-                'That account doesn’t have access to the docs.'
-              )}{' '}
+                "That account doesn’t have access to the docs."
+              )}{" "}
               If your access is on another Google account, switch to it below.
             </p>
             <button
@@ -113,15 +110,15 @@ export default function SignInScreen({status, detail, onSignIn, onSignOut}) {
               onClick={handleSignOut}
               disabled={busy}
             >
-              <span>{busy ? 'Switching…' : 'Try another account'}</span>
+              <span>{busy ? "Switching…" : "Try another account"}</span>
             </button>
           </>
         )}
 
-        {status === 'error' && (
+        {status === "error" && (
           <>
             <p className={`${styles.note} ${styles.noteError}`} role="alert">
-              {detail || 'Something went wrong checking your access.'}
+              {detail || "Something went wrong checking your access."}
             </p>
             <button
               type="button"

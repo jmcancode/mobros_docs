@@ -17,6 +17,13 @@ SKU and QR, stock by channel, unit editing) now live in the
 [row expansion](./variants-sku-qr.md). The old `/inventory-ledger` link
 redirects here.
 
+:::tip[Deciding prices? Use Reprice]
+[Reprice](./reprice.md) checks every variant (Rip Live and Shipped Sealed
+separately) against TCGplayer, Scrydex and eBay, applies each item's markup and
+the minimum margin, and queues only what is off target for approval. This grid
+stays for inventory work.
+:::
+
 ## The margin model
 
 Everything on this screen comes from a handful of numbers per row:
@@ -161,7 +168,8 @@ undone.* and means it.
 | **Market Pricing** | Opens TCGPlayer search to attach a product ID and pull market price |
 | **Browse** | Import individual items from Shopify |
 
-`Last synced …` next to the buttons tells you when the last one finished.
+`Last synced …` next to the buttons tells you when the last one finished. If it
+failed, it reads **Sync failed** with the reason instead, and you get an alert.
 
 If a refresh is already running when you press **Refresh all**, the page
 attaches to the running job rather than erroring.
@@ -185,7 +193,9 @@ appends a new one.
 Pick a source, filter by name, tick items, **Load more** for the next page, then
 **Import N items**. What gets mapped:
 
-- **TCG_ID** — only inferred if the SKU is 4–8 digits
+- **TCG_ID** — never inferred from the SKU. The shop's SKUs are sequential
+  numbers that happen to be other cards' TCGplayer ids, so set it with the
+  row's magnifier
 - **Type** — Shopify's product type
 - **Qty** — sum of variant inventory
 - **Cost** — the variant's cost field, or zero

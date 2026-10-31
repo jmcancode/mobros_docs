@@ -24,7 +24,7 @@ be granted tabs.
 | **Admin** | Full access to every tab and setting. Bypasses the matrix entirely. |
 | **General Manager** | Store-wide management — everything except API keys and role editing. |
 | **Shop Manager** | Day-to-day operations, catalog, community and content. |
-| **Accountant** | Financial views: analytics, orders, billing and rewards. |
+| **Accountant** | Financial views: analytics, orders and rewards. |
 | **Front of House** | Sales floor and customer-facing: intake, tickets, customers, pricing. |
 | **Back of House** | Fulfillment and receiving: inventory, shipping, products, grading. |
 | **Stream Manager** | Live shows, hit feed, giveaways and content. |
@@ -46,25 +46,43 @@ dashboard tabs at all:
 The full default grid is in the [role matrix reference](../reference/role-matrix.md).
 The short version:
 
-- **Employee** — Dashboard, Tickets, Sell Requests. That's it.
+- **Employee** — Analytics, Tickets, Sell Requests. That's it.
 - **Front of House** — the above, plus Customers, Buy Rates, Product Pricing,
   Rewards, Intake Processing.
-- **Back of House** — Dashboard, Shipping, Products, Grading, Product Pricing,
+- **Back of House** — Analytics, Shipping, Products, Grading, Product Pricing,
   Orders, Intake Processing.
-- **Shop Manager** — everything operational, catalog, community and content.
-- **GM** — everything except the two security-sensitive settings tabs.
-- **Admin** — everything.
+- **Accountant** — Analytics, Professor Oak, sales figures, Orders, Rewards, Buy
+  Rates, Product Pricing.
+- **Shop Manager** — everything operational, catalog, community and content,
+  plus Professor Oak and Pricing Rules.
+- **GM** — every tab the matrix can grant.
+- **Admin** — everything the matrix governs.
 
 These are only defaults. An admin can rewrite the whole grid live from
 [Settings → Roles & Access](../administration/roles-and-access.md), and a saved
 override **replaces** that role's tab list rather than adding to it.
 
-## Two tabs nobody gets by role
+## Four tabs nobody gets by role
 
-**API Keys** and **Roles & Access** are gated by an explicit list of user
-accounts, not by role. Not even a general Admin sees them unless their account
-is on that list. This is deliberate: those two screens hold secrets and control
-who-can-see-what, so they don't ride on a role anyone can be granted.
+**API Keys**, **Integrations** and **Roles & Access** are gated by an explicit
+list of user accounts, not by role. Not even a general Admin sees them unless
+their account is on that list. This is deliberate: the first two hold secrets and
+the third controls who-can-see-what, so none of them ride on a role anyone can be
+granted.
+
+**Billing** is a fourth case. It's pinned to a hard-coded list of accounts *and*
+the screen has been pulled from the Settings hub entirely — see
+[Billing](../administration/billing.md).
+
+All four show as locked cells in the Roles & Access grid rather than as
+checkboxes, because a tick there would do nothing.
+
+## Asking the server what it thinks
+
+Occasionally the sidebar and the data disagree — the grid says you have
+Notifications and the page still 403s. That means the dashboard and the API have
+resolved the matrix differently, which a developer can confirm in one request.
+See [Access control](../developers/access-control.md#backend-guards).
 
 ## "Unauthorized"
 

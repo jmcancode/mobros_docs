@@ -102,6 +102,22 @@ Each queue card lists which statuses it governs:
 Same 1–2160 hour clamp. Setting the reminder at or after the close time shows
 *Reminder must land before the close* — again advisory, not blocking.
 
+:::note[Received and Collected are not customer-wait]
+Once the goods are in the building the delay is **ours**, so `received`
+(submissions and uploads) and `collected` (home visits) deliberately sit outside
+this list. The staff SLA clock runs on them, and an unpaid pile surfaces as
+overdue rather than sitting quietly in a "waiting on them" bucket. See
+[Sell Requests](./sell-requests.md) and the
+[status reference](../reference/statuses.md#the-three-payout-stages).
+:::
+
+### When a lot closes at once
+
+Each auto-closed request normally sends its own push to the admins and the
+assignee. Past a handful in a single sweep — a first run after the scheduler was
+down, say — they collapse into **one summary push per queue** instead, so a
+backlog can't fire a hundred notifications at every admin.
+
 ### The reminder message
 
 *Sent once, at "remind at", so the timeout is never a surprise.*

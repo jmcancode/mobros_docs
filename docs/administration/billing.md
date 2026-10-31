@@ -1,73 +1,61 @@
 ---
 title: Billing
-sidebar_position: 2
-description: Buying features by card, and what each one costs to run.
+sidebar_position: 4
+description: Why there's no Billing tab any more, and where feature activation happens instead.
 ---
 
-# Settings → Billing
+# Billing
 
-> Turn on the features you want and pay securely by card. Each one activates the
-> moment payment clears — no back-and-forth.
+:::danger[The Billing screen has been pulled from the dashboard]
+There is no **Billing** tab in the Settings hub. `/billing` and
+`/settings/billing` both redirect to **Settings**. The page still exists in the
+codebase, unreferenced — it was taken out of the hub, not deleted.
 
-Self-serve. Any admin can use it.
+Nothing on this page describes a screen you can currently open.
+:::
 
-## The cards
+## So how does a feature get switched on?
 
-One card per available feature, each showing:
+Two ways, and neither of them is self-serve any more.
 
-- The feature title and a one-line tagline
-- **What** it does
-- **Why** it matters to the shop
-- **Monthly** — the ongoing running cost, or *None — no added running cost.*
-- The one-time build price, captioned **one-time build**
-- A checkbox — or an **Active** badge if it's already paid for
-
-A feature that's currently on trial shows a yellow **Trialing · still due**
-badge. A trial turns the feature on but doesn't clear the bill.
-
-If everything is paid for, the grid is replaced with
-*🎉 All delivered features are active.*
-
-## Ongoing costs
-
-The total bar at the bottom shows both numbers, and they're different things:
-
-- **`Pay $X`** — the one-time build cost of what you've selected
-- **`+ ~$X/mo ongoing`** — what those features add to your monthly running cost
-
-Worth knowing before you tick everything: **Live Shopping** is $250/mo flat
-(streaming allowance, dedicated stream server, replay storage), **Hit Feed** is
-about $50/mo in image storage and push volume, and the **Card Scanner** is
-usage-billed — 50,000 scan tokens a month included, then $0.035 per token.
-
-Most other features are *None — reuses your existing infrastructure.*
-
-## Paying
-
-**Pay $X** hands you off to Stripe's hosted checkout. Nothing on this screen
-touches your card details.
-
-When you come back:
-
-- `?paid=1` → *Payment received — your selected features are now active. Thank
-  you!*
-- `?canceled=1` → *Checkout was canceled — nothing was charged.*
-
-Features activate automatically when Stripe confirms payment. If a screen still
-shows locked immediately afterwards, navigate away and back — the entitlement
-check re-runs when you open a gated screen.
-
-## Errors
-
-| Message | Meaning |
+| Path | Who |
 | --- | --- |
-| *Can't reach the server…* | The backend is down |
-| *That feature isn't available for purchase yet.* | It's built but not on the price list |
-| *Payments aren't set up yet — please check back shortly.* | Stripe isn't configured on the backend |
+| **Activation** | The developer account only. Grants a feature, or starts and ends a trial |
+| **Stripe payment** | Arranged off-dashboard. A feature activates when Stripe confirms the payment |
+
+**Activation** is in the sidebar under **Admin**, and it's pinned to a single
+account — not a role. An Admin, a GM, even the shop owner won't see it unless
+they *are* that account. It used to be open to any admin; it isn't.
+
+A feature marked **Held for discovery** can't be switched on from Activation at
+all. The grant control and the trial toggle are both disabled, and the server
+refuses the request, so there's no way to switch one on by accident before the
+commercial conversation has happened.
+
+## What's on the price list
+
+The catalog, what each feature does, and which screens it unlocks are all in
+[Locked features](../getting-started/locked-features.md). That page is still
+current — it describes the lock panel you actually see on a gated screen.
+
+What the catalog *costs* is now a two-track question — lease or own, with setup,
+monthly and maintenance components derived from each feature's build price — and
+those terms live with the quote rather than on a dashboard screen. Ask rather
+than guessing from an old number.
+
+## If a feature shows locked after it was paid for
+
+The entitlement check re-runs when you open a gated screen, not on a timer.
+Navigate away and back.
+
+If every feature shows locked at once, that's the fail-closed path — the
+dashboard couldn't reach the billing service and locked everything rather than
+leaking it. The locked panel adds *Couldn't reach the billing service — showing
+locked.* It clears itself once the service is back.
 
 ## Related
 
 - [Locked features](../getting-started/locked-features.md) — what a locked
-  screen looks like and why
+  screen looks like, and the full feature catalog
 - [Roles & Access](./roles-and-access.md) — the other gate, and why a screen can
   be hidden even when it's paid for

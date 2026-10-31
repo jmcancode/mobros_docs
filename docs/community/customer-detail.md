@@ -88,6 +88,18 @@ redemption rate, last earned, last redeemed.
 
 **Sync Shopify credit** pulls their store credit balance from Shopify.
 
+A customer can hold two kinds of credit, and the app shows them separately,
+never added together:
+
+| Kind | Where it comes from |
+| --- | --- |
+| **Store credit** | Added here, from Customers, by Claude, from point redemptions, or in Shopify. Spent at Shopify checkout. |
+| **Trade-in credit** | Trades at the shop counter. Shown on its own row in the app when above $0. |
+
+The store credit figure here is the Shopify one. Adding credit from the
+**Credit** mode below sends the customer a push with the amount and their new
+balance; your reason stays internal.
+
 ### The Manage panel
 
 **Manage** opens four modes:

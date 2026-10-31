@@ -95,6 +95,30 @@ cost basis**, **Projected margin** / **Realized margin**, **Prize pool**
 If the floor isn't met you get a warning telling you the average market value
 per spot and what the floor is: *Add more high-value prizes before activating.*
 
+## Contents at market
+
+**Check market** values every pack, slab and prize in the game at TCGplayer and
+Scrydex market, and compares it with what the game takes in (buy-in × total
+spots). Only a market confirmed as the right card counts (see
+[Reprice](../catalog/reprice.md#is-it-the-right-card)). An item without one,
+which today includes every slab, is counted at its store price instead and
+shows as *at store*.
+
+- *Takes in $X for $Y of contents (+Z%)* means the game is priced above its
+  contents.
+- **Priced below market** in red means the game takes in less than its contents
+  are worth: raise the buy-in or change the prizes before activating.
+
+Each item is listed with its market value and its store price. Hand-entered
+prizes count at the value typed in. Items with no confirmed market price are
+called out, and an item with no price at all means the total understates the
+game. The prize's own
+"market value" field is the store price when it was added, so it is not a
+market check by itself.
+
+Games are left out of [Reprice](../catalog/reprice.md); this is where their
+contents get checked.
+
 ## The profit calculator
 
 Collapsible planning tool. It uses its own target margin, saved onto the game

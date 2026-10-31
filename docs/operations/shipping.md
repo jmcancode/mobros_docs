@@ -6,6 +6,12 @@ description: The free-shipping-on-first-order-of-the-day rule.
 
 # Shipping Automation
 
+:::caution[Not currently in the sidebar]
+The **Shipping** nav item is switched off, so you'll need the URL
+(`/shipping-automation`). The screen itself works, the role grant still applies,
+and the rule still runs — only the nav entry is hidden.
+:::
+
 :::info[Requires the Free-Shipping Automation feature]
 Hidden until activated, and the backend re-checks the entitlement at run time —
 so the rule can't fire even if the page somehow renders. See

@@ -40,6 +40,7 @@ const sidebars = {
       label: 'Daily operations',
       items: [
         'operations/dashboard',
+        'operations/professor-oak',
         'operations/sell-requests',
         'operations/tickets',
         'operations/automations',
@@ -51,6 +52,7 @@ const sidebars = {
       type: 'category',
       label: 'Catalog & pricing',
       items: [
+        'catalog/reprice',
         'catalog/product-pricing',
         'catalog/variants-sku-qr',
         'catalog/buy-rates',
@@ -66,6 +68,7 @@ const sidebars = {
         'community/customers',
         'community/customer-detail',
         'community/rewards',
+        'community/bags',
         'community/games',
         'community/giveaways',
       ],
@@ -75,6 +78,8 @@ const sidebars = {
       label: 'Content & marketing',
       items: [
         'content/notifications',
+        'content/marketing',
+        'content/promotions',
         'content/live-breaks',
         'content/hit-feed',
         'content/shows',
@@ -85,6 +90,10 @@ const sidebars = {
       label: 'Administration',
       items: [
         'administration/roles-and-access',
+        'administration/pricing-rules',
+        'administration/integrations',
+        'administration/sessions',
+        'administration/claude-access',
         'administration/billing',
       ],
     },

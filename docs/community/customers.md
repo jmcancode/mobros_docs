@@ -16,6 +16,73 @@ program-level health dashboard for the loyalty program.
 **Total Customers**, **Active Members** (anyone with points), **Points in
 Circulation**, **Store Credit Issued**.
 
+**Store Credit Issued** is a button — the whole card is the target, and it opens
+the store credit ledger below.
+
+## The store credit ledger
+
+Click **Store Credit Issued** and you get three tabs. The first answers *where
+is this money*, which is what people actually open it for; the other two answer
+*where did it come from*.
+
+| Tab | What it lists |
+| --- | --- |
+| **Who holds it** | Every customer holding a balance right now |
+| **Shopify credit** | Every issuance, reclaim and redemption behind the card total |
+| **Buy-list trade credit** | A **separate** balance that is *not* counted on the card |
+
+### Who holds it
+
+Figures: **Balance outstanding**, **Customers holding it**, **Dormant 90d+** and
+**Largest single**.
+
+**Dormant 90d+** is the useful one — balances untouched for 90 days or more are
+the ones worth chasing first. Filter by **Last active**, or set a minimum
+balance, then export.
+
+Turn any filter on and the figures relabel themselves — **Balance in view**,
+**Customers in view** — rather than showing an all-time number next to a
+filtered list.
+
+### Shopify credit
+
+Figures: **Issued all time**, **Reclaimed by staff**, a third tile that is
+either **Spent at checkout** or **Not in this ledger**, and **Balance
+outstanding**.
+
+:::note[The card is a balance; the ledger is a list of issuances]
+Those two legitimately differ, and the strip spells out the gap rather than
+leaving you to wonder which number is broken:
+
+- `issued − reclaimed = net`, but a different figure sits on the books.
+- **Gap in our favour** → that's credit customers already spent at checkout.
+  Shopify settles it against its own account without writing a row here.
+- **Gap the other way** → balance no row explains. It was set directly in
+  Shopify or predates this ledger, so it has no date, reason or author.
+:::
+
+If the history is too large to scan in one go, the figures say **Issued
+(partial)** and warn that they cover only the entries loaded — a full history
+needs the Firestore index deployed. Nothing is labelled "all time" over a
+partial scan.
+
+### Buy-list trade credit
+
+Figures: **Issued**, **Unclaimed**, **Lifetime earned**, **Balance
+outstanding**. **Unclaimed** is credit owed to people who traded in but have no
+account yet, so it sits in escrow.
+
+### Filters, export and navigation
+
+Both ledger tabs filter by **date range**, by **employee**, and by **kind** —
+the kind chips are faceted off the current date range, so their counts describe
+the period you're looking at and toggling one never changes the others'
+numbers under you.
+
+Long lists render a window at a time with a **load more**; a filter change
+reopens the window. **Export** downloads the current tab as CSV. Clicking a row
+opens that [customer's record](./customer-detail.md).
+
 ## Mo'Rewards Health
 
 *Live snapshot of your points program.* On the right, the **point value** —
@@ -81,9 +148,24 @@ ledger entries.
 3. Enter the amount
 4. Fill in **Reason (audit trail)**
 
-The reason field is enforced for **point** adjustments — *A reason is required
-for point adjustments.* Fill it in regardless; it's the only record of why a
-balance moved.
+The reason is **required for every movement, in both directions and for both
+kinds** — points and store credit, adding and removing:
+
+| | |
+| --- | --- |
+| *A reason is required for point adjustments* | Points, either direction |
+| *A reason is required to issue store credit* | Credit, adding |
+| *A reason is required to remove store credit* | Credit, removing |
+
+It's the Reason column in the store credit ledger, and *Admin issued $5.00*
+explains nothing to whoever reads it later.
+
+:::note[Adding credit sends the customer a push]
+Every time credit is added, from here, Customer Detail or Claude, the customer
+gets a push: *Store credit added. $10.00 in store credit was added to your
+account. Your balance is $25.00.* Tapping it opens their Store credit screen in
+the app. **Your reason is never shown to them.** Removing credit sends nothing.
+:::
 
 :::caution[Store credit needs a linked Shopify account]
 If the customer has no Shopify account you'll see *No Shopify account linked.

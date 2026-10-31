@@ -6,6 +6,12 @@ description: Moderating the customer feed of card pulls.
 
 # Hit Feed
 
+:::caution[Not currently in the sidebar]
+The **Hit Feed** nav item is switched off, so you'll need the URL (`/hit-feed`).
+The screen, the role grant and the moderation endpoints all still work — only
+the nav entry is hidden.
+:::
+
 :::info[Requires the Hit Feed feature]
 See [Locked features](../getting-started/locked-features.md).
 :::

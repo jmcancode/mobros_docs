@@ -24,7 +24,7 @@ in the system still sees the lock panel until the feature is activated.
 | What you see | Which gate | How to fix it |
 | --- | --- | --- |
 | Plain *Unauthorized* page | Role | Get the tab granted in [Roles & Access](../administration/roles-and-access.md) |
-| Blurred preview + lock chip | Entitlement | Purchase or trial it via [Billing](../administration/billing.md) |
+| Blurred preview + lock chip | Entitlement | Purchase or trial it — see [Billing](../administration/billing.md) for who can |
 | The screen isn't in the sidebar at all | Either | Both gates hide nav items — check role first, then activation |
 
 ## Which screens are gated
@@ -36,17 +36,19 @@ in the system still sees the lock panel until the feature is activated.
 | [Product Pricing](../catalog/product-pricing.md) *(the Add product route)* | Multi-Store Inventory |
 | [Hit Feed](../content/hit-feed.md) | Hit Feed |
 | [Feed Studio](../catalog/feed-studio.md) | Feed Studio |
+| [Marketing](../content/marketing.md) | Marketing Suite |
 
 ## How a feature gets unlocked
 
-Two paths:
+Two paths, neither of them self-serve from the dashboard:
 
-- **Purchase.** Any admin can go to
-  [Settings → Billing](../administration/billing.md), tick the features they
-  want, and pay by card. Each one activates the moment payment clears.
+- **Purchase.** Payment is arranged off-dashboard; the feature activates when
+  Stripe confirms it. The old self-serve **Settings → Billing** screen has been
+  [pulled from the Settings hub](../administration/billing.md).
 - **Trial.** A feature can be switched on for a trial period so you can try it
   before committing. Ask about a trial and it gets enabled on your account — it
-  stays owed while it's running, so it still counts toward your balance.
+  stays owed while it's running, so it still counts toward your balance. Trials
+  are granted from **Activation**, which is pinned to the developer account.
 
 Either way, the change is picked up the next time you open the gated screen, so
 you may need to navigate away and back.
@@ -67,7 +69,8 @@ clears itself once the service is back.
 | **Auto-Restock Alerts** | Customers subscribe to sold-out products and get a push the moment you restock. |
 | **Multi-Store Inventory** | Real-time inventory sync across stores with variant lookup, drift detection and audit logging. |
 | **Card Scanner** | Photograph a card, get an identification and live market pricing. |
-| **Feed Studio** | Drag-and-arrange console for the app's Search feed. |
+| **Feed Studio** | Drag-and-arrange console for the app's Search screen, Home tabs and Bags layout. |
+| **Marketing Suite** | One calendar and board for posts, ads and Shopify sends, with tracked links, budgets and attribution. |
 | **First Customer Free-Shipping Automation** | Free shipping on the first customer purchase of the day. |
 | **High-Value Order Verification** | Flags large or unusual orders for review before they ship. |
 | **Marketing Notifications** | Automated birthday and promo pushes. |
@@ -75,6 +78,7 @@ clears itself once the service is back.
 | **Push Timer + Admin Assignment** | SLA timers and assignment on support requests, with escalation. |
 | **Prize Wheel on Login** | Spin-to-win wheel when customers open the app. |
 
-Each carries its own one-time build price and, where applicable, an ongoing
-monthly running cost — both shown on the [Billing](../administration/billing.md)
-page.
+Some are built and live, some are still being built, and some are held pending a
+discovery conversation — the Activation page labels those **Held for discovery**
+and refuses to switch them on. Pricing is per-feature and now runs on two tracks
+(lease or own); see [Billing](../administration/billing.md).

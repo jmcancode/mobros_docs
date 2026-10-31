@@ -10,6 +10,13 @@ Reading a whole page to find one answer is slow. Every page on this site has a
 **Copy for AI** button in the top right — press it, paste into whichever
 assistant you already use, and type your question like you'd ask a coworker.
 
+:::note[This is about the docs, not about the shop's data]
+Pasting a page gets you answers about **how a screen works**. For questions about
+what's actually happening in the shop — *how did we do this month*, *what should
+I be reordering* — that's [Professor Oak](../operations/professor-oak.md) and the
+tools behind it, which read live data.
+:::
+
 ## How to use it
 
 1. Open the page for the screen you're stuck on. If you're on **Sell Requests**

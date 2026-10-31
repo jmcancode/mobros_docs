@@ -6,6 +6,21 @@ description: Every status value in the app, per queue, with what stops the clock
 
 # Status reference
 
+## The three payout stages
+
+Every sell queue runs the same shape, worded in its own terms:
+
+| Stage | Item Submissions | Collection Uploads | Home Visits |
+| --- | --- | --- | --- |
+| Awaiting delivery — we said yes, goods not here | `Approved` | `Priced` | `Scheduled` |
+| Awaiting payment — goods here, seller unpaid | `Received` | `Received` | `Collected` |
+| Done | `Paid` | `Paid` | `Paid` |
+
+**Paid** is the finish line everywhere. `Completed` remains terminal on uploads
+and home visits as legacy vocabulary — it meant "done" before the payout stages
+existed, and demoting it now would resurrect closed requests into the live
+queue.
+
 ## Item Submissions
 
 | Status | Terminal? | Clock |
@@ -13,15 +28,17 @@ description: Every status value in the app, per queue, with what stops the clock
 | Pending | no | Your SLA runs |
 | In Review | no | Your SLA runs |
 | Waiting on Customer | no | **Paused.** Customer timeout runs |
-| Approved | no | **Paused.** Customer timeout runs — they still have to ship |
+| Approved · Awaiting Delivery | no | **Paused.** Customer timeout runs — they still have to ship |
+| Received · Unpaid | no | **Your SLA runs.** The goods are here; we owe money |
+| Paid | **yes** | Stopped |
 | Rejected | **yes** | Stopped |
 | Declined *(legacy)* | **yes** | Stopped |
 | Cancelled | **yes** | Stopped |
 | Timed Out | **yes** | Stopped |
 | No Show | **yes** | Stopped |
 
-Counts as an accepted outcome: Approved. As rejected: Rejected, Declined.
-Cancelled, Timed Out and No Show are drop-offs — neither.
+Counts as an accepted outcome: Approved, Received, Paid. As rejected: Rejected,
+Declined. Cancelled, Timed Out and No Show are drop-offs — neither.
 
 ## Collection Uploads
 
@@ -31,11 +48,15 @@ Cancelled, Timed Out and No Show are drop-offs — neither.
 | In Review | no | Your SLA runs |
 | Priced | no | **Paused.** Customer timeout runs |
 | Waiting on Customer | no | **Paused.** Customer timeout runs |
-| Completed | **yes** | Stopped |
+| Received · Unpaid | no | **Your SLA runs** |
+| Paid | **yes** | Stopped |
+| Completed *(legacy)* | **yes** | Stopped |
 | Declined | **yes** | Stopped |
 | Cancelled | **yes** | Stopped |
 | Timed Out | **yes** | Stopped |
 | No Show | **yes** | Stopped |
+
+Accepted: Completed, Received, Paid. Rejected: Declined.
 
 ## Home Visits
 
@@ -46,11 +67,15 @@ Cancelled, Timed Out and No Show are drop-offs — neither.
 | Scheduled | no | **Paused.** Customer timeout runs |
 | Waiting on Customer | no | **Paused.** Customer timeout runs |
 | Confirmed *(legacy)* | no | Counts as accepted |
-| Completed | **yes** | Stopped |
+| Collected · Unpaid | no | **Your SLA runs** |
+| Paid | **yes** | Stopped |
+| Completed *(legacy)* | **yes** | Stopped. No longer offerable — see [Sell Requests](../operations/sell-requests.md#home-visits) |
 | Declined *(legacy)* | no | Counts as rejected |
 | Cancelled | **yes** | Stopped |
 | Timed Out | **yes** | Stopped |
 | No Show | **yes** | Stopped |
+
+Accepted: Completed, Confirmed, Collected, Paid.
 
 ## Support Tickets
 
@@ -74,6 +99,17 @@ Cancelled, Timed Out and No Show are drop-offs — neither.
 
 All sixteen values are editable in
 [Automations](../operations/automations.md).
+
+## Payment methods
+
+Preset so payouts stay aggregatable, the same reasoning as the cancellation
+reasons below:
+
+Cash · Store Credit · PayPal · Zelle · Venmo · Check · Other
+
+A method is required to record a payout. Payouts written before the method
+picker existed are reported as **unrecorded** rather than attributed to a
+method nobody chose.
 
 ## Cancellation reasons
 

@@ -7,17 +7,17 @@ description: Where to start if you're building, deploying, or debugging MoBros.
 
 # Developer docs
 
-MoBros TCG is four codebases sharing one backend and one Firebase project.
+MoBros TCG is several codebases sharing **two** servers and one Firebase project.
 
 | Path | What it is |
 | --- | --- |
 | `backend/` | Node + Express API on Heroku. The only thing that talks to Shopify, Mux, Shippo and Stripe |
+| `mobros_mcp/` | MCP server on its own Heroku app. Exposes shop operations as tools for Claude and for the dashboard's [Professor Oak](../operations/professor-oak.md) page |
 | `mobile/` | React Native customer app. Admin screens are embedded in the same build |
 | `web/admin-dashboard/` | Vite + React SPA — the Command Center |
-| `web/mobros-hub/` | Vite marketing site |
+| `web/mobros-hub/` | Vite marketing site and storefront |
 | `web/docs-site/` | This documentation site |
-| `mobros_mcp/` | MCP server exposing shop operations as tools |
-| `firestore-rules/` | Security rules |
+| `firestore-rules/` | Security rules and their emulator tests |
 
 ## Where to go
 
@@ -49,3 +49,13 @@ The dashboard's only direct external dependency is Firebase.
 **Two axes gate the UI.** Entitlements (what the shop bought) and roles (what
 the person can open) are independent systems. Adding a screen usually means
 touching both.
+
+**The matrix is mirrored, not shared.** `web/admin-dashboard/src/config/accessMatrix.js`
+and `backend/lib/access-matrix.js` hold the same tab keys and the same defaults
+in two files, deliberately — the client decides what to *render*, the API decides
+what to *serve*. Change them together, or `GET /api/whoami` is how you'll find
+out you didn't.
+
+**The MCP server has its own identity model.** `mcpAdmins` plus scopes, separate
+from the dashboard's roles. A staff member with every tab can still be refused a
+tool.

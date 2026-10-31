@@ -32,9 +32,9 @@ npm install
 npm run dev
 ```
 
-Vite serves on `http://localhost:5173`. Sign in with a Google account that
-carries the admin role — see [Signing in](../getting-started/signing-in.md) for
-why that matters.
+Vite serves on `http://localhost:5173`. Sign in with an account that carries
+**any staff role** — email and password, Google, or Apple. See
+[Signing in](../getting-started/signing-in.md).
 
 Other scripts:
 
@@ -55,6 +55,38 @@ VITE_API_URL=http://localhost:3000/api
 Leaving it unset falls back to exactly that, so local dev usually needs no
 configuration at all. A **production** build with no `VITE_API_URL` logs a loud
 console error, because every call would hit localhost and fail.
+
+The same applies to `VITE_MCP_URL`, which defaults to
+`http://localhost:3001/api` — so Professor Oak, the weak point scan and
+Settings → Integrations all need the MCP server running locally, or that variable
+pointed at the deployed one.
+
+## MCP server
+
+```bash
+cd mobros_mcp
+cp .env.example .env     # fill in SHOPIFY_*, SCRYDEX_API_KEY, …
+npm install
+npm start
+```
+
+Serves on `http://localhost:3001`. Two things it needs beyond `.env`:
+
+- **Firebase**: a `serviceAccountKey.js` in the repo root (gitignored), or one of
+  the `FIREBASE_SERVICE_ACCOUNT*` variables.
+- **OAuth keys**: `oauth-private.pem` and `oauth-public.pem`, already generated
+  in the repo.
+
+There's a one-time Firestore seed to run before the first start, and an
+`mcpAdmins/{uid}` document for every account that should be an admin there —
+dashboard roles mean nothing to this server.
+
+:::note[Claude Desktop can't reach localhost]
+To test the MCP protocol surface rather than the REST one, tunnel through ngrok,
+set `SERVER_BASE_URL` to the `https://…ngrok.app` URL, restart, and point Claude
+Desktop's config at `<that URL>/mcp`. OAuth discovery does the rest. The repo's
+`README.md` has the exact steps.
+:::
 
 ## Docs site
 

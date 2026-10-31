@@ -178,11 +178,91 @@ Config vars mirror `backend/.env`. `FIREBASE_PRIVATE_KEY` is the one that
 regularly goes wrong — Heroku stores the literal `\n` sequences, and they have
 to be turned back into newlines before the Admin SDK sees the key.
 
+## The MCP server on Heroku
+
+A **separate Heroku app** from the backend, with its own config vars (every
+variable from `mobros_mcp/.env.example`). Two that are easy to miss:
+
+- **`SERVER_BASE_URL`** / **`OAUTH_ISSUER`** — OAuth discovery is served from
+  these, so an MCP client can't connect if they're wrong.
+- **`MCP_CREDENTIALS_KEY`** — without it the server refuses credential uploads
+  and [Settings → Integrations](../administration/integrations.md) disables its
+  Upload buttons. Generate one with the repo's
+  `scripts/generate-credentials-key.js`, set it, and restart.
+
+The dashboard reaches it at `VITE_MCP_URL`, pinned in
+`web/admin-dashboard/.env.production` for the same reason `VITE_API_URL` is.
+
+## Order for a release that touches everything
+
+Most releases touch one or two of these. When a release spans all of them, as
+the October batch does, go in this order:
+
+1. **Firestore rules**, then **Storage rules**, back to back. Storage role
+   checks read staff roles through Firestore, so they're only trustworthy once
+   Firestore is locked. Accept the console prompt that lets Storage read
+   Firestore. Run the rules tests in `firestore-rules/` first.
+2. **Backend.** New routes, webhooks and the session cutoff check.
+3. **MCP server.** Its tools and `/api/access`.
+4. **Dashboard** and **mobrostc.app**.
+5. **The app.** Store builds last, since a new build can't be pulled back.
+
+Features that ship switched off stay off until someone turns them on: promo
+modals (`settings/promos.enabled`), Bags (the launch switch starts at **Off**),
+Live Activities (`LIVE_ACTIVITIES_ENABLED`), the Marketing Suite (needs the
+entitlement) and App Check (needs keys).
+
+### Shopify scopes and webhooks
+
+The Admin API app needs `read_customers`, `read_orders` and `write_discounts`
+for promo codes, `write_marketing_events` for the Marketing Suite, and
+`write_publications` and `write_order_edits` for Bags (taking slabs off sale,
+putting pulled slabs on the order). Without
+the last one, marketing items still save and their sync status reads
+**needs scope**.
+
+After changing the backend's Shopify app or URL, re-register webhooks with
+`backend/scripts/register-shopify-webhooks.js` (run `--dry-run` first). Bags
+adds two topics to that script: `orders/cancelled` and `refunds/create`. Shopify
+deletes a subscription after 8 consecutive failures, so watch the logs for
+webhook 401s for a day.
+
+## App Check
+
+The code is in the app, mobrostc.app and the dashboard, and does nothing until
+keys exist.
+
+- **Web:** register reCAPTCHA Enterprise in Firebase App Check for both
+  production domains, then set `VITE_RECAPTCHA_ENTERPRISE_SITE_KEY` in each
+  Netlify site and redeploy.
+- **iOS:** add the App Attest capability in Xcode with the production
+  environment, and register App Attest and DeviceCheck in the console
+  (DeviceCheck needs a `.p8` key).
+- **Android:** register Play Integrity, link the Play Console app to the
+  Firebase project and add the Play app-signing SHA-256. Test from an internal
+  testing install, not a sideloaded build.
+- **Debug tokens** go in the console's debug token list. Never commit one: the
+  mobile `.env` is tracked in git.
+
+:::warning[Leave enforcement off for now]
+Keep every product in monitor mode until the App Check metrics show nearly all
+traffic verified. Builds from before 1.2.0 send no App Check token, and there's
+no forced-update gate yet, so enforcing early locks those customers out. When
+it's time, enforce Storage, then Firestore, then Auth. The backend and MCP
+server use the Admin SDK and aren't affected.
+:::
+
 ## Deploy checklist
 
 - [ ] Backend deployed first, if the release includes API changes
-- [ ] `VITE_API_URL` points at the right backend
+- [ ] `VITE_API_URL` and `VITE_MCP_URL` point at the right servers
+- [ ] A new tab key added to `src/config/accessMatrix.js`,
+      `backend/lib/access-matrix.js` and the mobile mirror, and the route
+      guarded with `requireTab`. No need to touch `LEGACY_SAVED_KEYS`: saved
+      roles pick up the new key's default on their own
 - [ ] Firestore indexes created for any new ordered or collection-group query
 - [ ] Security rules updated for any new collection
-- [ ] Docs site builds clean — no broken links
+- [ ] Docs site builds clean (no broken links) and is **pushed to
+      `jmcancode/mobros_docs`**. It's a separate repo, so a monorepo push
+      doesn't publish it
 - [ ] Docs updated for any screen whose behaviour changed
